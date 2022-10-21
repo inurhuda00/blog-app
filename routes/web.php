@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
 
+// auth()->loginUsingId(1);
+
 Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('articles/table', [ArticleController::class, 'table'])->name('articles.table');

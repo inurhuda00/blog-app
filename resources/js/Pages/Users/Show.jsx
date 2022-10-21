@@ -136,16 +136,15 @@ export default function Show({ auth, user, ...props }) {
                 <Header.Title>{user.name}</Header.Title>
                 <Header.Subtitle> {user.joined}</Header.Subtitle>
                 {user.bio && (
-                    <span className="text-white">
-                        <p>bio :</p>
+                    <div className="text-white mt-6">
                         <p dangerouslySetInnerHTML={{ __html: user.bio }} />
-                    </span>
+                    </div>
                 )}
                 <div className="mt-3 flex items-center justify-start gap-2">
                     {user.links && user.links.length
                         ? user.links.map((link, i) => (
                               <a
-                                  href={link.url}
+                                  href={link.full_url}
                                   key={i}
                                   target="_blank"
                                   rel="noopener"
@@ -162,7 +161,7 @@ export default function Show({ auth, user, ...props }) {
                           ))
                         : null}
                 </div>
-                {auth.user.username === user.username && (
+                {auth.user?.username === user.username && (
                     <PrimaryButton className="mt-6">
                         <Link href={route("settings.profile")}>edit</Link>
                     </PrimaryButton>

@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Article;
 use App\Models\Category;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -18,11 +20,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        // User::factory()->create([
-        //     'name' => 'Ilham Nuruddin Al Huda',
-        //     'email' => 'inurhuda00@gmail.com',
-        //     'username' => 'inurhuda00',
-        // ]);
+        User::factory()->hasArticles(150)->create([
+            'name' => 'Ilham Nuruddin Al Huda',
+            'email' => 'inurhuda00@gmail.com',
+            'username' => 'inurhuda00',
+        ]);
+
 
         $this->call([
             CategorySeeder::class,

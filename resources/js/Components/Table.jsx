@@ -2,13 +2,49 @@ import { Menu } from "@headlessui/react";
 import { Link } from "@inertiajs/inertia-react";
 import clsx from "clsx";
 
+const ChevronDownIcon = ({ ...props }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        {...props}
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+        />
+    </svg>
+);
+
+const ChevronUpIcon = ({ ...props }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        {...props}
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4.5 15.75l7.5-7.5 7.5 7.5"
+        />
+    </svg>
+);
+
 const Table = ({ children, className = "" }) => {
     return (
         <div className={clsx(className, "flex flex-col")}>
-            <div className="inline-block min-w-full align-middle">
-                <table className="min-w-full divide-y divide-gray-200">
-                    {children}
-                </table>
+            <div className="overflow-x-auto">
+                <div className="inline-block min-w-full align-middle">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        {children}
+                    </table>
+                </div>
             </div>
         </div>
     );
@@ -35,16 +71,34 @@ const Td = ({ className = "", children, ...props }) => {
     );
 };
 
-const Th = ({ className, children }) => {
+const Th = ({ className, sort, sortable, children, ...props }) => {
     return (
         <th
+            {...props}
             scope="col"
             className={clsx(
                 className,
                 "whitespace-nowrap px-6 py-3 text-left text-sm font-semibold text-black"
             )}
         >
-            {children}
+            {sortable ? (
+                <div className="flex items-center gap-2">
+                    {children}
+                    {sort === "asc" ? (
+                        <ChevronUpIcon
+                            className="h-4 w-4 stroke-2"
+                            aria-hidden="true"
+                        />
+                    ) : (
+                        <ChevronDownIcon
+                            className="h-4 w-4 stroke-2"
+                            aria-hidden="true"
+                        />
+                    )}
+                </div>
+            ) : (
+                <>{children}</>
+            )}
         </th>
     );
 };

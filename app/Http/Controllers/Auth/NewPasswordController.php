@@ -38,6 +38,7 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
@@ -59,11 +60,22 @@ class NewPasswordController extends Controller
             }
         );
 
+
+
+        if ($status == Password::PASSWORD_RESET && $request->page) {
+            return back()->with([
+                'type' => 'success',
+                'message' => 'password changed'
+            ]);
+        }
+
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         if ($status == Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('status', __($status));
+            return to_route('login')->with([
+                'status' => __($status)
+            ]);
         }
 
         throw ValidationException::withMessages([

@@ -6,16 +6,16 @@ use App\Enums\ArticleStatus;
 use App\Http\Requests\ArticleRequest;
 use App\Http\Resources\ArticleItemResource;
 use App\Http\Resources\ArticleSingleResource;
-use App\Http\Resources\ArticleTableResource;
+use App\Http\Resources\ArticleTableCollection;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-
     public $tags;
     public $categories;
     public $statuses;
@@ -33,6 +33,29 @@ class ArticleController extends Controller
 
     public function table(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'direction' => ['in:asc,desc'],
+            'field' => ['in:title,status'],
+            'load' => ['int'],
+            'q' => ['string'],
+        ]);
+
+        $direction = $request->direction;
+        $field = $request->field;
+        $load = $request->load;
+
+        if ($validator->errors()->get('direction')) {
+            $direction = 'asc';
+        }
+        if ($validator->errors()->get('field')) {
+            $field = 'title';
+        }
+
+        if ($validator->errors()->get('load')) {
+            $load = '5';
+        }
+
         $articles = Article::query()
             ->with([
                 'author',
@@ -44,12 +67,23 @@ class ArticleController extends Controller
             //     // $request->user() is not admin
             // , fn($query) => $query->whereBelongsTo($request->user(), 'author')
             // )
-            ->latest()
-            ->fastPaginate(10);
+            ->when(
+                $request->q,
+                fn ($query) =>
+                $query
+                    ->where('title', 'like', '%' . $request->q . '%')
+                // ->orWhereHas('author', fn ($query) => $query->where('name', 'like', '%' . $request->q . '%'))
+            )
+            ->when(
+                $request->has(['field', 'direction']),
+                fn ($query) =>
+                $query->orderBy($field, $direction)
+            )
+            ->fastPaginate($load <= 50 ? $load ?? 5 : 5);
 
         return inertia(
             'Articles/Table',
-            ['articles' => ArticleTableResource::collection($articles)]
+            ['articles' => new ArticleTableCollection($articles)]
         );
     }
 
@@ -136,8 +170,8 @@ class ArticleController extends Controller
 
         $currentArticle = $article->load([
             'tags' => fn ($query) => $query->select('name', 'slug'),
-            'category' => fn ($query) => $query->select('id', 'name',    'slug'),
-            'author' => fn ($query) => $query->select('id', 'name',    'username')
+            'category' => fn ($query) => $query->select('id', 'name', 'slug'),
+            'author' => fn ($query) => $query->select('id', 'name', 'username')
 
         ]);
 

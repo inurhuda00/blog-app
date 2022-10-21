@@ -15,16 +15,21 @@ class UserSingleResource extends JsonResource
      */
     public function toArray($request)
     {
+        $profile = $this->profile ? [
+            'bio' =>  $this->profile->bio,
+            'links' => $this->profile->links->map(fn ($link) => [
+                'id' => $link->id,
+                'name' => $link->name,
+                'full_url' => $link->name->fullUrl($link->url),
+                'display' => $link->display
+            ])
+        ] : [];
+
         return  [
             'name' => $this->name,
             'username' => $this->username,
             'email' => $this->email,
-            'bio' => $this->profile->bio,
-            'links' => $this->profile->links->map(fn ($link) => [
-                'id' => $link->id,
-                'name' => $link->name,
-                'url' => $link->url,
-            ]),
+            ...$profile
         ];
     }
 }

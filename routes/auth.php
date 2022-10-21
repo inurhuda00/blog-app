@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\EmailChangeController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -26,15 +27,24 @@ Route::middleware('guest')->group(function () {
 
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
         ->name('password.email');
-
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-        ->name('password.reset');
-
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
-        ->name('password.update');
 });
 
+Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->name('password.reset');
+
+
+Route::post('reset-password', [NewPasswordController::class, 'store'])
+    ->name('password.update');
+
+
 Route::middleware('auth')->group(function () {
+
+    Route::post('email-change', [EmailChangeController::class, 'change'])->middleware('password.confirm')->name('change.email');
+
+    Route::get('email-change-verify/{user}', [EmailChangeController::class, 'verify'])
+        // ->middleware('throttle:2,1')
+        ->name('change.email.verification');
+
     Route::get('verify-email', [EmailVerificationPromptController::class, '__invoke'])
         ->name('verification.notice');
 

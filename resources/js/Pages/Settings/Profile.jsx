@@ -28,6 +28,7 @@ export default function Profile({ user, linkTypes, errors }) {
     };
 
     let [isOpen, setIsOpen] = useState(false);
+
     function closeModal() {
         setIsOpen(false);
     }
@@ -36,21 +37,24 @@ export default function Profile({ user, linkTypes, errors }) {
         setIsOpen(true);
     }
 
-    const [formLink, setLink] = useState({ url: "", name: "" });
+    const {
+        data: formLink,
+        setData: setLink,
+        reset: resetLink,
+    } = useForm({ url: "", name: "" });
 
     const handleAddLink = () => {
         Inertia.post(
             route("links.store"),
-            { link: formLink },
-            { preserveScroll: true }
+            { ...formLink },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    closeModal();
+                    resetLink();
+                },
+            }
         );
-
-        closeModal();
-        setLink({ url: "", name: "" });
-    };
-
-    const handleChangeLink = (e) => {
-        setLink({ url: e.target.value, name: formLink.name });
     };
 
     const handleRemoveLink = (link) => {
@@ -110,10 +114,8 @@ export default function Profile({ user, linkTypes, errors }) {
                                                                     }
                                                                     onClick={() => {
                                                                         setLink(
-                                                                            {
-                                                                                url: formLink.url,
-                                                                                name: link.name,
-                                                                            }
+                                                                            "name",
+                                                                            link.name
                                                                         );
                                                                     }}
                                                                     className="cursor-pointer inline-flex text-black hover:bg-gray-200 bg-gray-100 transition duration-200 px-2 py-1 rounded-md"
@@ -138,27 +140,46 @@ export default function Profile({ user, linkTypes, errors }) {
                                                     <Input
                                                         name="link"
                                                         id="link"
-                                                        onChange={
-                                                            handleChangeLink
+                                                        onChange={(e) =>
+                                                            setLink(
+                                                                "url",
+                                                                e.target.value
+                                                            )
                                                         }
                                                         value={formLink.link}
                                                     />
                                                 )}
                                             </div>
-                                            <button
-                                                className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 disabled:bg-gray-400"
-                                                onClick={handleAddLink}
-                                                disabled={
-                                                    !(
-                                                        formLink.name &&
-                                                        formLink.url
-                                                    )
-                                                }
-                                                type="button"
-                                            >
-                                                Add Link
-                                            </button>
+                                            <div className="flex items-center justify-end gap-4">
+                                                <button
+                                                    className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 disabled:bg-gray-400"
+                                                    onClick={handleAddLink}
+                                                    disabled={
+                                                        !(
+                                                            formLink.name &&
+                                                            formLink.url
+                                                        )
+                                                    }
+                                                    type="button"
+                                                >
+                                                    Add Link
+                                                </button>
+                                                <button
+                                                    className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 disabled:bg-gray-400"
+                                                    onClick={() => {
+                                                        !formLink.name
+                                                            ? closeModal()
+                                                            : resetLink();
+                                                    }}
+                                                    type="button"
+                                                >
+                                                    back
+                                                </button>
+                                            </div>
                                         </div>
+                                        {errors.url && (
+                                            <Error value={errors.url} />
+                                        )}
                                     </Dialog.Panel>
                                 </Transition.Child>
                             </div>
@@ -240,9 +261,11 @@ export default function Profile({ user, linkTypes, errors }) {
                         <button
                             type="button"
                             onClick={
-                                !(user.links.length >= 3) ? openModal : null
+                                !(user.links && user.links.length >= 3)
+                                    ? openModal
+                                    : null
                             }
-                            disabled={user.links.length >= 3}
+                            disabled={user.links && user.links.length >= 3}
                             className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 disabled:bg-gray-400"
                         >
                             Add Social Links
@@ -250,14 +273,16 @@ export default function Profile({ user, linkTypes, errors }) {
                     </div>
 
                     {user.links && user.links.length ? (
-                        <div className="mb-3 flex flex-wrap rounded-lg bg-purple-200 dark:bg-gray-400">
-                            {user.links.map((link) => (
+                        <div className="mb-12 flex flex-wrap rounded-lg bg-purple-200 dark:bg-gray-400">
+                            {user.links.map((link, i) => (
                                 <span
                                     className="flex flex-wrap pl-4 pr-2 py-2 m-1 justify-between items-center text-sm font-medium rounded-xl cursor-pointer bg-purple-500 text-gray-200 hover:bg-purple-600 hover:text-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-100"
-                                    key={link.id}
+                                    key={i}
                                 >
                                     {socials[link.name].icon}
-                                    <span className="ml-2">{link.name}</span>
+                                    <span className="ml-2">
+                                        {link.display ?? link.name}
+                                    </span>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-5 w-5 ml-3 hover:text-gray-300"

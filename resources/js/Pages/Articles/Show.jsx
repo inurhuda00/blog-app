@@ -4,7 +4,7 @@ import Header from "@/Components/Header";
 import { Container } from "@/Components/Container";
 import PrimaryButton from "@/Components/PrimaryButton";
 
-export default function Show(props) {
+export default function Show({ auth, ...props }) {
     const { data: article, related: articles } = props.article;
 
     return (
@@ -51,11 +51,13 @@ export default function Show(props) {
                 <Header.Title>{article.title}</Header.Title>
                 <Header.Subtitle>{article.excerpt}</Header.Subtitle>
 
-                <PrimaryButton className="mt-6">
-                    <Link href={route("articles.edit", article.slug)}>
-                        edit
-                    </Link>
-                </PrimaryButton>
+                {auth.user?.id === article.author.id && (
+                    <PrimaryButton className="mt-6">
+                        <Link href={route("articles.edit", article.slug)}>
+                            edit
+                        </Link>
+                    </PrimaryButton>
+                )}
             </Header>
 
             <Container>

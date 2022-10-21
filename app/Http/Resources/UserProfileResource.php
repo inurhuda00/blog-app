@@ -17,8 +17,9 @@ class UserProfileResource extends JsonResource
         $profile = $this->profile ? [
             'bio' =>  $this->profile->bio,
             'links' => $this->profile->links->map(fn ($link) => [
+                'id' => $link->id,
                 'name' => $link->name,
-                'url' => $link->url,
+                'full_url' => $link->name->fullUrl($link->url),
             ])
         ] : [];
 

@@ -6,7 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Footer from "./Footer";
 import Navigation from "./Navigation";
 
-export default function App({ children }) {
+export default function Dashboard({ children }) {
     const { flash } = usePage().props;
 
     useEffect(() => {

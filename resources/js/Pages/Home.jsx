@@ -6,8 +6,6 @@ import Grid from "@/Components/Grid";
 import ArticleBlock from "@/Components/ArticleBlock";
 
 export default function Home({ articles, ziggy }) {
-    console.log("first", ziggy);
-
     return (
         <>
             <Head title="Seorang Kapiten" />

@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Enums\ArticleStatus;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Article extends Model
 {
@@ -25,9 +27,16 @@ class Article extends Model
         return 'slug';
     }
 
+    // public function picture(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn ($value) => env('APP_URL') . Storage::url($value)
+    //     );
+    // }
+
     public function tags()
     {
-        return $this->belongsToMany(Tag::class)->select('slug', 'name');
+        return $this->belongsToMany(Tag::class)->select('id', 'slug', 'name');
     }
 
     public function category()

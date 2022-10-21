@@ -1,26 +1,130 @@
 import { Container } from "@/Components/Container";
+import Input from "@/Components/Input";
 import Pagination from "@/Components/Pagination";
 import Table from "@/Components/Table";
 import useSwal from "@/Hooks/useSwal";
 import DashboardLayout from "@/Layouts/DashboardLayout";
+import { Inertia } from "@inertiajs/inertia";
 import { Link } from "@inertiajs/inertia-react";
 import clsx from "clsx";
+import { debounce, pickBy } from "lodash";
+import { useCallback, useEffect, useState } from "react";
 
 export default function ArticleTable(props) {
-    const { data: articles, meta, links } = props.articles;
+    const { data: articles, meta, filtered, attributes } = props.articles;
 
     const { ask } = useSwal();
 
+    const [params, setParams] = useState(filtered);
+    const [pageNumber, setPageNumber] = useState([]);
+
+    const reload = useCallback(
+        debounce((query) => {
+            Inertia.get(
+                route("articles.table"),
+
+                pickBy({ ...query, page: query.q ? 1 : query.page }),
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                }
+            );
+        }, 150),
+        []
+    );
+
+    useEffect(() => reload(params), [params]);
+    useEffect(() => {
+        let numbers = [];
+
+        for (
+            let i = attributes.per_page;
+            i <= attributes.total / attributes.per_page;
+            i = i + attributes.per_page
+        ) {
+            numbers.push(i);
+        }
+
+        setPageNumber(numbers);
+    }, []);
+
+    const handleChange = (e) => {
+        setParams({ ...params, [e.target.name]: e.target.value });
+    };
+
+    const sort = (item) => {
+        setParams({
+            ...params,
+            field: item,
+            direction: params.direction === "asc" ? "desc" : "asc",
+        });
+    };
+
     return (
         <Container>
+            <div className="flex items-center justify-start gap-2">
+                {pageNumber.length ? (
+                    <select
+                        name="load"
+                        id="load"
+                        onChange={(e) => handleChange(e)}
+                        value={params.load}
+                        className="flex-shrink
+                    mt-1
+                    rounded-md
+                    border-gray-300
+                    shadow-sm
+                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                  "
+                    >
+                        {pageNumber.map((number, i) => (
+                            <option key={i} value={number}>
+                                {number}
+                            </option>
+                        ))}
+                    </select>
+                ) : null}
+
+                <label className="block w-full">
+                    <input
+                        type="text"
+                        className="
+                    mt-1
+                    block
+                    w-full
+                    rounded-md
+                    border-gray-300
+                    shadow-sm
+                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                  "
+                        placeholder="search..."
+                        name="q"
+                        onChange={handleChange}
+                        value={params.q}
+                    />
+                </label>
+            </div>
+
             <Table>
                 <Table.Thead>
                     <tr>
                         <Table.Th>#</Table.Th>
-                        <Table.Th>Title</Table.Th>
+                        <Table.Th
+                            onClick={() => sort("title")}
+                            sortable
+                            sort={params.field === "title" && params.direction}
+                        >
+                            Title
+                        </Table.Th>
                         <Table.Th>Category</Table.Th>
                         <Table.Th>Tags</Table.Th>
-                        <Table.Th>Status</Table.Th>
+                        <Table.Th
+                            onClick={() => sort("status")}
+                            sortable
+                            sort={params.field === "status" && params.direction}
+                        >
+                            Status
+                        </Table.Th>
                     </tr>
                 </Table.Thead>
                 <Table.Tbody>
@@ -120,7 +224,36 @@ export default function ArticleTable(props) {
                 </Table.Tbody>
             </Table>
 
-            <Pagination {...{ meta, links }} />
+            <div>
+                {meta.links.length > 2 && (
+                    <>
+                        <ul className=" mt-10 justify-center flex items-center gap-x-1">
+                            {meta.links.map((item, i) => {
+                                return item.url != null ? (
+                                    <button
+                                        key={i}
+                                        className={clsx(
+                                            item.active &&
+                                                "text-blue-600 border-blue-300 bg-blue-50",
+                                            "w-11 h-9 text-sm font-semibold rounded shadow-sm border flex items-center justify-center"
+                                        )}
+                                        onClick={() =>
+                                            setParams({
+                                                ...params,
+                                                page: new URL(
+                                                    item.url
+                                                ).searchParams.get("page"),
+                                            })
+                                        }
+                                    >
+                                        {item.label}
+                                    </button>
+                                ) : null;
+                            })}
+                        </ul>{" "}
+                    </>
+                )}
+            </div>
         </Container>
     );
 }

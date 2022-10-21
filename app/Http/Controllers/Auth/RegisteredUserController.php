@@ -57,6 +57,7 @@ class RegisteredUserController extends Controller
         $profile->links()->create([
             'name' => LinkType::WEBSITE->value,
             'url' => env('APP_URL') . '/' . $user->username,
+            'display' => 'goahira.co'
         ]);
 
         event(new Registered($user));

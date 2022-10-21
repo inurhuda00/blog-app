@@ -6,7 +6,7 @@ use App\Enums\LinkType;
 use App\Http\Resources\UserSingleResource;
 use App\Models\Link;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
+use Illuminate\Validation\Rules\Enum;
 
 class SettingsController extends Controller
 {
@@ -15,7 +15,6 @@ class SettingsController extends Controller
     {
 
         $user = $request->user()->load('profile');
-
 
         return inertia('Settings/Profile', [
             'user' => new UserSingleResource($user),
@@ -29,8 +28,8 @@ class SettingsController extends Controller
     public function account(Request $request)
     {
         $user = $request->user()->load('profile');
-
         return inertia('Settings/Account', [
+            'token' => app('auth.password.broker')->createToken($user),
             'user' => new UserSingleResource($user),
             'linkTypes' => collect(LinkType::cases())->map(fn ($status, $i) => [
                 'id' => $status->value,
@@ -59,13 +58,13 @@ class SettingsController extends Controller
             'username' => $request->username,
         ]);
 
-        $request->user()->profile()->update([
+        $request->user()->profile()->updateOrCreate([
             'bio' => $request->bio
         ]);
 
         return to_route('users.show', $request->user()->username)->with([
             'type' => 'success',
-            'message' => 'article updated'
+            'message' => 'profile updated'
         ]);
     }
 
@@ -78,14 +77,23 @@ class SettingsController extends Controller
             ]);
         }
 
-        $request->validate([
-            'link.name' => ['required', 'string'],
-            'link.url' => ['required', 'string'],
-        ]);
+        if ($request->name == LinkType::WEBSITE->value) {
+            $request->validate([
+                'name' => ['required', 'string', new Enum(LinkType::class)],
+                'url' => ['required', 'string', 'url', 'active_url']
+            ]);
+        } else {
+            $request->validate([
+                'name' => ['required', new Enum(LinkType::class)],
+                'url' => ['required', 'alpha_dash']
+            ]);
+        }
+
+
 
         $request->user()->profile->links()->create([
-            'name' => $request->link['name'],
-            'url' => $request->link['url']
+            'name' => $request->name,
+            'url' => $request->url
         ]);
 
         return back()->with([

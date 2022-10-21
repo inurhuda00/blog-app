@@ -1,13 +1,238 @@
 import { Container } from "@/Components/Container";
 import PrimaryButton from "@/Components/PrimaryButton";
-import AppLayout from "@/Layouts/AppLayout";
-import { useForm } from "@inertiajs/inertia-react";
+import { useForm, usePage } from "@inertiajs/inertia-react";
 import DashboardLayout from "@/Layouts/DashboardLayout";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useEffect, useState } from "react";
+import InputLabel from "@/Components/InputLabel";
+import Input from "@/Components/Input";
+import InputError from "@/Components/InputError";
+import { Inertia } from "@inertiajs/inertia";
 
-export default function Account({ errors, user }) {
-    const { data, setData } = useForm();
+const PasswordForm = ({ closeModal }) => {
+    const { user, token, errors } = usePage().props;
+    const { data, setData, processing, reset } = useForm({
+        token,
+        email: user.email,
+        password: "",
+        password_confirmation: "",
+        page: true,
+    });
+
+    useEffect(() => {
+        return () => {
+            reset("password", "password_confirmation");
+        };
+    }, []);
+
+    const handleChange = (event) => {
+        setData(event.target.name, event.target.value);
+    };
+
+    const submit = (e) => {
+        e.preventDefault();
+
+        Inertia.post(
+            route("password.update"),
+            { ...data },
+            {
+                onSuccess: () => {
+                    closeModal();
+                },
+            }
+        );
+    };
+
     return (
         <>
+            <form onSubmit={submit}>
+                <div className="mt-4">
+                    <InputLabel forInput="password" value="Password" />
+
+                    <Input
+                        type="password"
+                        name="password"
+                        value={data.password}
+                        className="mt-1 block w-full"
+                        autoComplete="new-password"
+                        isFocused={true}
+                        onChange={handleChange}
+                    />
+
+                    <InputError message={errors.password} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel
+                        forInput="password_confirmation"
+                        value="Confirm Password"
+                    />
+
+                    <Input
+                        type="password"
+                        name="password_confirmation"
+                        value={data.password_confirmation}
+                        className="mt-1 block w-full"
+                        autoComplete="new-password"
+                        onChange={handleChange}
+                    />
+
+                    <InputError
+                        message={errors.password_confirmation}
+                        className="mt-2"
+                    />
+                </div>
+
+                <div className="flex items-center justify-end mt-4">
+                    <PrimaryButton className="ml-4" processing={processing}>
+                        Change Password
+                    </PrimaryButton>
+                </div>
+            </form>
+        </>
+    );
+};
+
+const EmailForm = ({ closeModal }) => {
+    const { errors } = usePage().props;
+
+    const { data, setData, processing, reset } = useForm({
+        email: "",
+    });
+
+    const handleChange = (event) => {
+        setData(event.target.name, event.target.value);
+    };
+
+    const submit = (e) => {
+        e.preventDefault();
+        Inertia.post(
+            route("change.email"),
+            { ...data },
+            {
+                onSuccess: () => {
+                    // closeModal();
+                    // reset();
+                },
+            }
+        );
+    };
+
+    return (
+        <>
+            <form onSubmit={submit}>
+                <div className="mt-4">
+                    <InputLabel forInput="email" value="New Email" />
+
+                    <Input
+                        type="text"
+                        name="email"
+                        value={data.email}
+                        className="mt-1 block w-full"
+                        onChange={handleChange}
+                    />
+
+                    <InputError message={errors.email} className="mt-2" />
+                </div>
+
+                <div className="flex items-center justify-end mt-4">
+                    <PrimaryButton className="ml-4" processing={processing}>
+                        Change Email
+                    </PrimaryButton>
+                </div>
+            </form>
+        </>
+    );
+};
+
+const modalsComponent = {
+    email: {
+        title: "Change Email Address",
+        element: (props) => <EmailForm {...props} />,
+    },
+    password: {
+        title: "Change Password",
+        element: (props) => <PasswordForm {...props} />,
+    },
+};
+
+export default function Account({ errors, user, auth }) {
+    const { data, setData } = useForm();
+    let [modal, setModal] = useState({
+        open: false,
+        type: "email",
+    });
+
+    function closeModal() {
+        setModal({ ...modal, open: false });
+    }
+
+    function openModalEmail() {
+        setModal({
+            open: true,
+            type: "email",
+        });
+    }
+    function openModalPassword() {
+        setModal({
+            open: true,
+            type: "password",
+        });
+    }
+
+    const { element: ModalElement, title } = modalsComponent[modal.type];
+
+    return (
+        <>
+            <>
+                <Transition appear show={modal.open} as={Fragment}>
+                    <Dialog
+                        as="div"
+                        className="relative z-10"
+                        onClose={closeModal}
+                    >
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <div className="fixed inset-0 bg-black bg-opacity-25" />
+                        </Transition.Child>
+
+                        <div className="fixed inset-0 overflow-y-auto">
+                            <div className="flex min-h-full items-center justify-center p-4 text-center">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 scale-95"
+                                    enterTo="opacity-100 scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 scale-100"
+                                    leaveTo="opacity-0 scale-95"
+                                >
+                                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                                        <Dialog.Title
+                                            as="h3"
+                                            className="text-lg font-medium leading-6 text-gray-900"
+                                        >
+                                            {title}
+                                        </Dialog.Title>
+                                        <div className="mt-2">
+                                            <ModalElement
+                                                closeModal={closeModal}
+                                            />
+                                        </div>
+                                    </Dialog.Panel>
+                                </Transition.Child>
+                            </div>
+                        </div>
+                    </Dialog>
+                </Transition>
+            </>
             <Container>
                 <div className="max-w-xl">
                     <h3 className="mb-6 font-semibold text-lg">
@@ -29,7 +254,11 @@ export default function Account({ errors, user }) {
                                     </p>
                                 </div>
 
-                                <button className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900">
+                                <button
+                                    type="button"
+                                    className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900"
+                                    onClick={openModalEmail}
+                                >
                                     Change
                                 </button>
                             </div>
@@ -45,13 +274,15 @@ export default function Account({ errors, user }) {
                                     </p>
                                 </div>
 
-                                <button className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900">
+                                <button
+                                    type="button"
+                                    className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900"
+                                    onClick={openModalPassword}
+                                >
                                     Change
                                 </button>
                             </div>
                         </div>
-
-                        <PrimaryButton>Update</PrimaryButton>
                     </form>
                 </div>
             </Container>

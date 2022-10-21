@@ -26,7 +26,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50)->default(LinkType::WEBSITE->value);
             $table->string('url', 100);
-            $table->string('display', 25);
+            $table->string('display', 25)->nullable();
             $table->foreignIdFor(Profile::class);
         });
     }
