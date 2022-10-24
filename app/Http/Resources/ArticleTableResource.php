@@ -17,7 +17,7 @@ class ArticleTableResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'url' => route('articles.show', $this->slug),
+            'url' => route('articles.show', ['user' => $this->author, $this->slug]),
             'slug' => $this->slug,
             'author' => $this->author,
             'status' => $this->status->label(),

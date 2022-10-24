@@ -18,7 +18,7 @@
 }
 
 .swal-button {
-    @apply rounded-md px-4 py-2 transition duration-200 shadow hover:shadow-lg;
+    @apply px-4 py-2 transition duration-200 shadow hover:shadow-lg;
 }
 
 .swal-button--confirm,

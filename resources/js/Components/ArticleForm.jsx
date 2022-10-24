@@ -1,12 +1,12 @@
+import { usePage } from "@inertiajs/inertia-react";
+import Editor from "./Editor";
+import Error from "./Error";
+import Filepond from "./Filepond";
 import Input from "./Input";
 import InputLabel from "./InputLabel";
-import Textarea from "./Textarea";
-import Editor from "./Editor";
-import Select from "./Select";
 import MultipleSelect from "./MultipleSelect";
-import Error from "./Error";
-import { usePage } from "@inertiajs/inertia-react";
-import Filepond from "./Filepond";
+import Select from "./Select";
+import Textarea from "./Textarea";
 
 export const ArticleForm = ({ data, setData }) => {
     const { errors, tags, categories, statuses } = usePage().props;
@@ -29,7 +29,7 @@ export const ArticleForm = ({ data, setData }) => {
                 {errors.picture && <Error value={errors.picture} />}
             </div>
 
-            <div className="grid grid-cols-12 gap-6 mb-6">
+            <div className="mb-6 grid grid-cols-12 gap-6">
                 <div className="col-span-4">
                     <InputLabel forInput="category_id">Category</InputLabel>
                     <Select

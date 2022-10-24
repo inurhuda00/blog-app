@@ -51,6 +51,13 @@ class UserController extends Controller
     {
         $articles = Article::query()
             ->whereBelongsTo($user, 'author')
+            ->select('slug', 'title', 'excerpt', 'user_id', 'published_at', 'id')
+            ->with([
+                'tags' => fn ($query) => $query->select('slug', 'name'),
+                'author'
+            ])
+            ->published()
+            ->latest()
             ->fastPaginate(6);
 
         return inertia('Users/Show', [

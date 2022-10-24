@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ArticleItemResource;
 use App\Models\Article;
 use App\Models\Category;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -13,12 +12,10 @@ class CategoryController extends Controller
     {
         $articles = Article::query()
             ->orWhereBelongsTo($category)
-            ->select('slug', 'title', 'picture', 'excerpt', 'user_id', 'created_at', 'id')
+            ->select('slug', 'title', 'picture', 'excerpt', 'user_id', 'category_id', 'published_at', 'id')
             ->published()
             ->latest()
             ->fastPaginate();
-
-        // return ArticleItemResource::collection($articles);
 
         return inertia('Categories/Show', [
             'category' => $category,

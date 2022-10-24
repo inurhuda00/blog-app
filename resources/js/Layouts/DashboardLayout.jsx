@@ -7,7 +7,7 @@ import Footer from "./Footer";
 import Navigation from "./Navigation";
 
 export default function Dashboard({ children }) {
-    const { flash } = usePage().props;
+    const { flash, auth } = usePage().props;
 
     useEffect(() => {
         flash.type && toast[flash.type](flash.message);
@@ -16,58 +16,59 @@ export default function Dashboard({ children }) {
     return (
         <div>
             <Navigation />
+            {auth.user ? (
+                <Container className="bg-slate-900">
+                    <nav className="flex justify-start space-x-4 py-2">
+                        <Link
+                            href={route("dashboard")}
+                            className={clsx(
+                                route().current("dashboard")
+                                    ? "bg-gray-800 text-white"
+                                    : null,
+                                "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                            )}
+                        >
+                            Dashboard
+                        </Link>
+                        <Link
+                            href={route("settings.account")}
+                            className={clsx(
+                                route().current("settings.account")
+                                    ? "bg-gray-800 text-white"
+                                    : null,
+                                "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                            )}
+                        >
+                            Account
+                        </Link>
 
-            <Container className="bg-slate-900">
-                <nav className="flex justify-start space-x-4 py-2">
-                    <Link
-                        href={route("dashboard")}
-                        className={clsx(
-                            route().current("dashboard")
-                                ? "text-white bg-gray-800"
-                                : null,
-                            "inline-flex items-center text-xs font-medium py-1 px-2 text-gray-400 "
-                        )}
-                    >
-                        Dashboard
-                    </Link>
-                    <Link
-                        href={route("settings.account")}
-                        className={clsx(
-                            route().current("settings.account")
-                                ? "text-white bg-gray-800"
-                                : null,
-                            "inline-flex items-center text-xs font-medium py-1 px-2 text-gray-400 "
-                        )}
-                    >
-                        Account
-                    </Link>
-
-                    <Link
-                        href={route("settings.profile")}
-                        className={clsx(
-                            route().current("settings.profile")
-                                ? "text-white bg-gray-800"
-                                : null,
-                            "inline-flex items-center text-xs font-medium py-1 px-2 text-gray-400 "
-                        )}
-                    >
-                        Profile
-                    </Link>
-
-                    <Link
-                        href={route("articles.table")}
-                        className={clsx(
-                            route().current("articles.table")
-                                ? "text-white bg-gray-800"
-                                : null,
-                            "inline-flex items-center text-xs font-medium py-1 px-2 text-gray-400 "
-                        )}
-                    >
-                        my article
-                    </Link>
-                </nav>
-            </Container>
-
+                        <Link
+                            href={route("settings.profile")}
+                            className={clsx(
+                                route().current("settings.profile")
+                                    ? "bg-gray-800 text-white"
+                                    : null,
+                                "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                            )}
+                        >
+                            Profile
+                        </Link>
+                        {auth.user.hasRole ? (
+                            <Link
+                                href={route("articles.table")}
+                                className={clsx(
+                                    route().current("articles.table")
+                                        ? "bg-gray-800 text-white"
+                                        : null,
+                                    "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                                )}
+                            >
+                                my article
+                            </Link>
+                        ) : null}
+                    </nav>
+                </Container>
+            ) : null}
             <Toaster />
 
             <div className="pt-8">{children}</div>

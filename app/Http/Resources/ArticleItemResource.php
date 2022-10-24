@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ArticleItemResource extends JsonResource
 {
     /**
@@ -15,23 +17,43 @@ class ArticleItemResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'title' => $this->title,
-            'slug' => $this->slug,
-            'excerpt' => $this->excerpt,
-            'picture' => $this->picture ? Storage::url($this->picture) : null,
-            'created_at' => $this->created_at->format('Y') == now()->format('Y')
-                ? $this->created_at->format('d M')
-                : $this->created_at->format('d M, Y'),
+
+        $excerpt = $this->excerpt ? ['excerpt' => $this->excerpt] : [];
+        $tags = count($this->tags) ? [
             'tags' => $this->tags->map(fn ($tag) => [
                 'name' => $tag->name,
                 'slug' => $tag->slug,
-            ]),
+            ])
+        ] : [];
+        $category = $this->category ? [
+            'category' => [
+                'name' => $this->category->name,
+                'slug' => $this->category->slug
+            ]
+        ] : [];
+        $author = $this->author ? [
             'author' => [
                 'name' => $this->author->name,
                 'username' => $this->author->username,
 
             ]
+        ] : [];
+
+
+        return [
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'picture' => $this->picture ? Storage::url($this->picture) : 'http://localhost/storage/images/articles/image.jpg',
+            'time' => [
+                'datetime' => $this->published_at,
+                'published_at' => $this->published_at->format('Y') == now()->format('Y')
+                    ? $this->published_at->format('F d , Y')
+                    : $this->published_at->format('d M, Y'),
+            ],
+            ...$excerpt,
+            ...$author,
+            ...$tags,
+            ...$category,
         ];
     }
 }

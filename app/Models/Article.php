@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ArticleStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,10 +16,11 @@ class Article extends Model
 
     protected $guarded = [];
 
-    protected $with = ['author', 'tags'];
+    protected $with = ['author', 'tags', 'category'];
 
     protected $casts = [
-        'status' => ArticleStatus::class
+        'status' => ArticleStatus::class,
+        'published_at' => 'datetime'
     ];
 
 
@@ -41,7 +43,7 @@ class Article extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class)->select('id', 'slug', 'name');
     }
 
     public function author()
@@ -51,7 +53,7 @@ class Article extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('status', ArticleStatus::PUBLISHED);
+        return $query->where('status', ArticleStatus::PUBLISHED)->whereNotNull('published_at');
     }
 
     public function scopeStatus($query, ArticleStatus $status)

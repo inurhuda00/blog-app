@@ -12,14 +12,14 @@ export default function App({ children }) {
     }, [flash]);
 
     return (
-        <div>
+        <>
             <Navigation />
 
             <Toaster />
 
-            <div className="pt-8">{children}</div>
+            {children}
 
             <Footer />
-        </div>
+        </>
     );
 }

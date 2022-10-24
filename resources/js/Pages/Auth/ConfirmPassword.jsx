@@ -52,7 +52,7 @@ export default function ConfirmPassword() {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
+                <div className="mt-4 flex items-center justify-end">
                     <PrimaryButton className="ml-4" processing={processing}>
                         Confirm
                     </PrimaryButton>

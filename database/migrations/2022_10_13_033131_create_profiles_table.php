@@ -18,7 +18,7 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->string('bio');
+            $table->string('bio')->nullable();
             $table->foreignIdFor(User::class);
         });
 

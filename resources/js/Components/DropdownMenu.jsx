@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
-import clsx from "clsx";
 import { InertiaLink } from "@inertiajs/inertia-react";
+import clsx from "clsx";
+import { Fragment } from "react";
 
 function DropdownMenu({ label, children }) {
     return (
@@ -11,8 +11,9 @@ function DropdownMenu({ label, children }) {
                     <Menu.Button
                         className={clsx(
                             "flex items-center gap-x-2 text-gray-400",
-                            open ? "text-white" : null
+                            open ? "text-black" : null
                         )}
+                        aria-label="toggle menu"
                     >
                         {label}
                     </Menu.Button>
@@ -25,7 +26,10 @@ function DropdownMenu({ label, children }) {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                     >
-                        <Menu.Items className="absolute right-0 top-9 w-60 space-y-1 overflow-hidden rounded-lg border border-gray-700 bg-gray-800 px-4 py-5 shadow-sm z-50">
+                        <Menu.Items
+                            as="ul"
+                            className="absolute right-0 top-9 z-50 w-60 space-y-1 overflow-hidden border-2 border-gray-900 bg-white px-4 py-5 shadow-sm"
+                        >
                             {children}
                         </Menu.Items>
                     </Transition>
@@ -37,15 +41,15 @@ function DropdownMenu({ label, children }) {
 
 function Link({ isActive = false, children, ...props }) {
     return (
-        <Menu.Item>
+        <Menu.Item as="li">
             {({ active }) => (
                 <InertiaLink className="block w-full text-left" {...props}>
                     <div
                         className={clsx(
                             active || isActive
-                                ? "bg-blue-700 text-white"
+                                ? "bg-black text-white"
                                 : "text-gray-400",
-                            "inline-block rounded-lg px-2 py-1 text-left text-sm font-medium"
+                            "px-2 py-1 text-left text-sm font-medium"
                         )}
                     >
                         {children}
@@ -57,7 +61,7 @@ function Link({ isActive = false, children, ...props }) {
 }
 function Divider() {
     return (
-        <div className="h-px w-full ml-2 my-2 block bg-gradient-to-r  from-gray-700 via-transparent to-transparent" />
+        <div className="my-2 ml-2 block h-px w-full bg-gradient-to-r  from-gray-700 via-transparent to-transparent" />
     );
 }
 

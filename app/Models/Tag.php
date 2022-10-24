@@ -12,7 +12,9 @@ class Tag extends Model
     public function articles()
     {
         return $this->belongsToMany(Article::class)
-            ->select('slug', 'title', 'picture', 'excerpt', 'user_id', 'created_at', 'id')
-            ->with(['tags' => fn ($query) => $query->select('slug', 'name')]);
+            ->select('slug', 'title', 'picture', 'excerpt', 'user_id', 'published_at', 'id')
+            ->with(['tags' => fn ($query) => $query->select('slug', 'name')])
+            ->published()
+            ->latest();
     }
 }

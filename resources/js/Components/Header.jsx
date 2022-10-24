@@ -5,7 +5,7 @@ function Header({ className = "", children }) {
         <div
             className={clsx(
                 className,
-                "-mt-8 mb-8 grid grid-cols-12 bg-gray-800 py-5 lg:py-32"
+                "mb-8 grid grid-cols-12 bg-gray-800 py-5 lg:py-32"
             )}
         >
             <div className="col-span-10 col-start-2">

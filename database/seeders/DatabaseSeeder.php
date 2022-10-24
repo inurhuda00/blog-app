@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call([
+            PermissionSeeder::class,
             CategorySeeder::class,
             TagSeeder::class,
             ArticleSeeder::class

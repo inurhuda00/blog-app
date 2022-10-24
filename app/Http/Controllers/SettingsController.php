@@ -38,18 +38,13 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function updateAccount(Request $request)
-    {
-        return $request;
-    }
-
     public function updateProfile(Request $request)
     {
 
         $request->validate([
             'name' => ['required'],
             'username' => 'required|alpha_dash|min:5|unique:users,username,' . $request->user()->id,
-            'bio' => ['required'],
+            'bio' => ['nullable'],
         ]);
 
 

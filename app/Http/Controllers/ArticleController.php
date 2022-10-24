@@ -10,6 +10,7 @@ use App\Http\Resources\ArticleTableCollection;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -22,7 +23,10 @@ class ArticleController extends Controller
 
     public function __construct()
     {
+        $this->authorizeResource(Article::class, 'article');
         $this->middleware('auth')->except('show', 'index');
+        $this->middleware('hasRole')->only('table', 'create');
+
         $this->tags = Tag::select('id', 'name')->get();
         $this->categories = Category::select('id', 'name')->get();
         $this->statuses = collect(ArticleStatus::cases())->map(fn ($status) => [
@@ -95,7 +99,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::query()
-            ->select('slug', 'title', 'excerpt', 'user_id', 'created_at', 'id')
+            ->select('slug', 'title', 'excerpt', 'user_id', 'published_at', 'id')
             ->with([
                 'tags' => fn ($query) => $query->select('slug', 'name'),
                 'author'
@@ -151,7 +155,7 @@ class ArticleController extends Controller
 
         $article->tags()->attach($request->tags);
 
-        return to_route('articles.show', $article)->with([
+        return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
             'type' => 'success',
             'message' => 'article created'
         ]);
@@ -163,11 +167,9 @@ class ArticleController extends Controller
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function show(Article $article)
+    public function show(Request $request, User $user, Article $article)
+
     {
-        $this->authorize('view', $article);
-
-
         $currentArticle = $article->load([
             'tags' => fn ($query) => $query->select('name', 'slug'),
             'category' => fn ($query) => $query->select('id', 'name', 'slug'),
@@ -175,17 +177,25 @@ class ArticleController extends Controller
 
         ]);
 
-
         $articles = Article::query()
-            ->select('id', 'title', 'slug')
-            ->whereNot('id', $article->id)
+            ->select('title', 'slug', 'user_id', 'published_at')
+            ->with([
+                'author' => fn ($query) => $query->select('id', 'name', 'username'),
+            ])
+            ->whereNot('slug', $article->slug)
             ->whereBelongsTo($article->category)
+            ->published()
             ->limit(10)
             ->get();
 
+        // return ArticleItemResource::collection($articles);
+
         return inertia('Articles/Show', [
+            'can' => [
+                'update_article' => $request->user() ? $request->user()->can('update', $article) : false
+            ],
             'article' => (new ArticleSingleResource($currentArticle))->additional([
-                'related' => $articles
+                'related' => ArticleItemResource::collection($articles),
             ])
         ]);
     }
@@ -228,7 +238,8 @@ class ArticleController extends Controller
             'slug' => $slug =  str($title)->slug(),
             'excerpt' => $request->excerpt,
             'category_id' => $request->category_id,
-            'status' => $request->status,
+            'status' => $status = $request->status,
+            'published_at' => $status === 2 ? now() : null,
             'body' => $request->body,
             'picture' => $request->hasFile('picture')
                 ? $picture->storeAs('images/articles', $slug . '.' . $picture->extension(), 'public')
@@ -238,7 +249,7 @@ class ArticleController extends Controller
 
         $article->tags()->sync($request->tags, true);
 
-        return to_route('articles.show', $article)->with([
+        return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
             'type' => 'success',
             'message' => 'article updated'
         ]);

@@ -69,9 +69,9 @@ export default function ArticleTable(props) {
                         id="load"
                         onChange={(e) => handleChange(e)}
                         value={params.load}
-                        className="flex-shrink
-                    mt-1
-                    rounded-md
+                        className="mt-1
+                    flex-shrink
+                    
                     border-gray-300
                     shadow-sm
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
@@ -92,7 +92,7 @@ export default function ArticleTable(props) {
                     mt-1
                     block
                     w-full
-                    rounded-md
+                    
                     border-gray-300
                     shadow-sm
                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
@@ -149,7 +149,7 @@ export default function ArticleTable(props) {
                                             <Link
                                                 href={tag.url}
                                                 key={i}
-                                                className="bg-gray-100 hover:bg-gray-200 transition font-medium text-xs px-2 py-1 rounded"
+                                                className="rounded bg-gray-100 px-2 py-1 text-xs font-medium transition hover:bg-gray-200"
                                             >
                                                 {tag.name}
                                             </Link>
@@ -169,7 +169,7 @@ export default function ArticleTable(props) {
                                                 article.status == "rejected" &&
                                                     "bg-red-100 hover:bg-red-200",
 
-                                                " transition font-medium text-xs px-2 py-1 rounded"
+                                                " rounded px-2 py-1 text-xs font-medium transition"
                                             )}
                                         >
                                             {article.status}
@@ -179,10 +179,10 @@ export default function ArticleTable(props) {
                                 <td>
                                     <Table.Dropdown>
                                         <Table.DropdownItem
-                                            href={route(
-                                                "articles.show",
-                                                article.slug
-                                            )}
+                                            href={route("articles.show", {
+                                                user: article.author,
+                                                article: article.slug,
+                                            })}
                                         >
                                             View
                                         </Table.DropdownItem>
@@ -227,15 +227,15 @@ export default function ArticleTable(props) {
             <div>
                 {meta.links.length > 2 && (
                     <>
-                        <ul className=" mt-10 justify-center flex items-center gap-x-1">
+                        <ul className=" mt-10 flex items-center justify-center gap-x-1">
                             {meta.links.map((item, i) => {
                                 return item.url != null ? (
                                     <button
                                         key={i}
                                         className={clsx(
                                             item.active &&
-                                                "text-blue-600 border-blue-300 bg-blue-50",
-                                            "w-11 h-9 text-sm font-semibold rounded shadow-sm border flex items-center justify-center"
+                                                "border-blue-300 bg-blue-50 text-blue-600",
+                                            "flex h-9 w-11 items-center justify-center rounded border text-sm font-semibold shadow-sm"
                                         )}
                                         onClick={() =>
                                             setParams({

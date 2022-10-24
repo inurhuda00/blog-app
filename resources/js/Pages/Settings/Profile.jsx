@@ -118,7 +118,7 @@ export default function Profile({ user, linkTypes, errors }) {
                                                                             link.name
                                                                         );
                                                                     }}
-                                                                    className="cursor-pointer inline-flex text-black hover:bg-gray-200 bg-gray-100 transition duration-200 px-2 py-1 rounded-md"
+                                                                    className="inline-flex cursor-pointer bg-gray-100 px-2 py-1 text-black transition duration-200 hover:bg-gray-200 "
                                                                 >
                                                                     {
                                                                         socials[
@@ -152,7 +152,7 @@ export default function Profile({ user, linkTypes, errors }) {
                                             </div>
                                             <div className="flex items-center justify-end gap-4">
                                                 <button
-                                                    className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 disabled:bg-gray-400"
+                                                    className="inline-flex items-center border border-transparent bg-gray-900 px-4 py-2  text-xs font-semibold uppercase tracking-widest text-white active:bg-gray-900 disabled:bg-gray-400"
                                                     onClick={handleAddLink}
                                                     disabled={
                                                         !(
@@ -165,7 +165,7 @@ export default function Profile({ user, linkTypes, errors }) {
                                                     Add Link
                                                 </button>
                                                 <button
-                                                    className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 disabled:bg-gray-400"
+                                                    className="inline-flex items-center border border-transparent bg-gray-900 px-4 py-2  text-xs font-semibold uppercase tracking-widest text-white active:bg-gray-900 disabled:bg-gray-400"
                                                     onClick={() => {
                                                         !formLink.name
                                                             ? closeModal()
@@ -189,17 +189,17 @@ export default function Profile({ user, linkTypes, errors }) {
             </>
             <Container>
                 <div className="max-w-xl">
-                    <h3 className="mb-6 font-semibold text-lg">
+                    <h3 className="mb-6 text-lg font-semibold">
                         Customize Profile
                     </h3>
                     <form onSubmit={handleSubmit} className="mb-6">
-                        <h4 className="font-bold text-xs mb-2 uppercase">
+                        <h4 className="mb-2 text-xs font-bold uppercase">
                             Profile Information
                         </h4>
 
                         <div className="mb-6">
                             <InputLabel forInput="name" value="Display Name" />
-                            <p className="text-xs mb-1 text-gray-500">
+                            <p className="mb-1 text-xs text-gray-500">
                                 Set a display name. This does not change your
                                 username.
                             </p>
@@ -214,7 +214,7 @@ export default function Profile({ user, linkTypes, errors }) {
 
                         <div className="mb-6">
                             <InputLabel forInput="username" value="Username" />
-                            <p className="text-xs mb-1 text-gray-500">
+                            <p className="mb-1 text-xs text-gray-500">
                                 Set a username
                             </p>
                             <Input
@@ -230,7 +230,7 @@ export default function Profile({ user, linkTypes, errors }) {
 
                         <div className="mb-6">
                             <InputLabel forInput="bio" value="Bio" />
-                            <p className="text-xs mb-1 text-gray-500">
+                            <p className="mb-1 text-xs text-gray-500">
                                 A brief description of yourself shown on your
                                 profile.
                             </p>
@@ -246,14 +246,14 @@ export default function Profile({ user, linkTypes, errors }) {
                         <PrimaryButton>Update</PrimaryButton>
                     </form>
 
-                    <h4 className="font-bold text-xs mb-2 uppercase">
+                    <h4 className="mb-2 text-xs font-bold uppercase">
                         Social Links
                     </h4>
 
                     <div className="mb-6">
                         <InputLabel forInput="link" value="Link" />
 
-                        <p className="text-xs mb-1 text-gray-500">
+                        <p className="mb-1 text-xs text-gray-500">
                             People who visit your profile will see your social
                             links. <b>3 Max</b>
                         </p>
@@ -266,7 +266,7 @@ export default function Profile({ user, linkTypes, errors }) {
                                     : null
                             }
                             disabled={user.links && user.links.length >= 3}
-                            className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900 disabled:bg-gray-400"
+                            className="inline-flex items-center border border-transparent bg-gray-900 px-4 py-2  text-xs font-semibold uppercase tracking-widest text-white active:bg-gray-900 disabled:bg-gray-400"
                         >
                             Add Social Links
                         </button>
@@ -276,7 +276,7 @@ export default function Profile({ user, linkTypes, errors }) {
                         <div className="mb-12 flex flex-wrap rounded-lg bg-purple-200 dark:bg-gray-400">
                             {user.links.map((link, i) => (
                                 <span
-                                    className="flex flex-wrap pl-4 pr-2 py-2 m-1 justify-between items-center text-sm font-medium rounded-xl cursor-pointer bg-purple-500 text-gray-200 hover:bg-purple-600 hover:text-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+                                    className="m-1 flex cursor-pointer flex-wrap items-center justify-between rounded-xl bg-purple-500 py-2 pl-4 pr-2 text-sm font-medium text-gray-200 hover:bg-purple-600 hover:text-gray-100 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-100"
                                     key={i}
                                 >
                                     {socials[link.name].icon}
@@ -285,7 +285,7 @@ export default function Profile({ user, linkTypes, errors }) {
                                     </span>
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5 ml-3 hover:text-gray-300"
+                                        className="ml-3 h-5 w-5 hover:text-gray-300"
                                         viewBox="0 0 20 20"
                                         fill="currentColor"
                                         onClick={() => handleRemoveLink(link)}

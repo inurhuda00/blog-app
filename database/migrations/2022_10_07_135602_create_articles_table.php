@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('body');
             $table->foreignId('user_id');
             $table->foreignId('category_id');
+            $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });
     }

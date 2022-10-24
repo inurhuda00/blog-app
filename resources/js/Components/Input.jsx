@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
 import clsx from "clsx";
+import { useEffect, useRef } from "react";
 
 export default function Input({
     type = "text",

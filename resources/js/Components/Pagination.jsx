@@ -6,11 +6,11 @@ export default function Pagination({ meta, links }) {
         <div>
             {meta.links.length > 2 && (
                 <>
-                    <ul className="flex mt-10 justify-between md:hidden items-center gap-x-0.5">
+                    <ul className="mt-10 flex items-center justify-between gap-x-0.5 md:hidden">
                         {links.prev ? (
                             <li>
                                 <Link
-                                    className="rounded border inline-flex p-2"
+                                    className="inline-flex rounded border p-2"
                                     href={links.prev}
                                     preserveScroll
                                 >
@@ -18,14 +18,14 @@ export default function Pagination({ meta, links }) {
                                 </Link>
                             </li>
                         ) : (
-                            <li className="rounded border inline-flex p-2 cursor-none">
+                            <li className="inline-flex cursor-none rounded border p-2">
                                 <LeftIcon />
                             </li>
                         )}
                         {links.next ? (
                             <li>
                                 <Link
-                                    className="rounded border inline-flex p-2"
+                                    className="inline-flex rounded border p-2"
                                     href={links.next}
                                     preserveScroll
                                 >
@@ -33,12 +33,12 @@ export default function Pagination({ meta, links }) {
                                 </Link>
                             </li>
                         ) : (
-                            <li className="rounded border inline-flex p-2 cursor-none">
+                            <li className="inline-flex cursor-none rounded border p-2">
                                 <RightIcon />
                             </li>
                         )}
                     </ul>
-                    <ul className="hidden mt-10 justify-center md:flex items-center gap-x-1">
+                    <ul className="mt-10 hidden items-center justify-center gap-x-1 md:flex">
                         {meta.links.map((item, i) => {
                             return item.url != null ? (
                                 item.label.includes("Previous") ? (
@@ -114,8 +114,8 @@ function PaginateLink({ active, href, children }) {
         <li>
             <Link
                 className={clsx(
-                    active && "text-blue-600 border-blue-300 bg-blue-50",
-                    "w-11 h-9 text-sm font-semibold rounded shadow-sm border flex items-center justify-center"
+                    active && "border-blue-300 bg-blue-50 text-blue-600",
+                    "flex h-9 w-11 items-center justify-center rounded border text-sm font-semibold shadow-sm"
                 )}
                 href={href}
                 preserveScroll

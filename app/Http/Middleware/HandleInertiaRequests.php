@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Spatie\Permission\Models\Role;
 use Tightenco\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
@@ -45,7 +46,12 @@ class HandleInertiaRequests extends Middleware
 
         return array_merge(parent::share($request), [
             'auth' => [
-                'user' => !is_null($request->user()) ?  $request->user()->only(['id', 'name', 'username', 'email']) : null,
+                'user' => !is_null($request->user()) ?
+                    [
+                        ...$request->user()->only(['id', 'name', 'username', 'email']),
+                        'hasRole' => $request->user()->hasAnyRole(Role::all())
+                    ]
+                    : null,
             ],
             'flash' => [
                 'type' => $request->session()->get('type'),

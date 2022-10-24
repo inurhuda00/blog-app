@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 // import hljs from "highlight.js";
 import { Tab } from "@headlessui/react";
 // import { marked } from "marked";
@@ -10,14 +10,14 @@ import clsx from "clsx";
 export default function Editor({ value, ...props }) {
     return (
         <Tab.Group>
-            <Tab.List className="flex items-center gap-x-4 pl-2 mb-2">
+            <Tab.List className="mb-2 flex items-center gap-x-4 pl-2">
                 <Tab as={Fragment}>
                     {({ selected }) => (
                         <button
                             className={clsx(
                                 "rounded-lg text-sm focus:outline-none",
                                 selected
-                                    ? "font-semibold text-semibold"
+                                    ? "text-semibold font-semibold"
                                     : "text-gray-500"
                             )}
                         >
@@ -31,7 +31,7 @@ export default function Editor({ value, ...props }) {
                             className={clsx(
                                 "rounded-lg text-sm focus:outline-none",
                                 selected
-                                    ? "font-semibold text-semibold"
+                                    ? "text-semibold font-semibold"
                                     : "text-gray-500"
                             )}
                         >
@@ -40,17 +40,17 @@ export default function Editor({ value, ...props }) {
                     )}
                 </Tab>
             </Tab.List>
-            <Tab.Panels className="max-h-[540px] h-[540px] overflow-y-auto border rounded-lg">
+            <Tab.Panels className="h-[540px] max-h-[540px] overflow-y-auto rounded-lg border">
                 <Tab.Panel>
                     <textarea
                         value={value}
-                        className="h-[540px] resize-none p-4 w-full border-0 focus:border-0 focus:ring-0"
+                        className="h-[540px] w-full resize-none border-0 p-4 focus:border-0 focus:ring-0"
                         {...props}
                     ></textarea>
                 </Tab.Panel>
                 <Tab.Panel>
                     <div
-                        className="prose max-w-none p-4 prose-blue prose-img:rounded-lg"
+                        className="prose prose-blue max-w-none p-4 prose-img:rounded-lg"
                         dangerouslySetInnerHTML={{ __html: value }}
                     />
                 </Tab.Panel>

@@ -24,7 +24,8 @@ class ArticleFactory extends Factory
             'slug' => str($title)->slug,
             'excerpt' => $this->faker->sentence(),
             'body' => $this->faker->sentence(),
-            'status' => rand(0, 3)
+            'status' => $status = rand(0, 3),
+            'published_at' => $status === 2 ? now() : null
 
         ];
     }

@@ -83,7 +83,7 @@ const PasswordForm = ({ closeModal }) => {
                     />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
+                <div className="mt-4 flex items-center justify-end">
                     <PrimaryButton className="ml-4" processing={processing}>
                         Change Password
                     </PrimaryButton>
@@ -135,7 +135,7 @@ const EmailForm = ({ closeModal }) => {
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
+                <div className="mt-4 flex items-center justify-end">
                     <PrimaryButton className="ml-4" processing={processing}>
                         Change Email
                     </PrimaryButton>
@@ -235,40 +235,40 @@ export default function Account({ errors, user, auth }) {
             </>
             <Container>
                 <div className="max-w-xl">
-                    <h3 className="mb-6 font-semibold text-lg">
+                    <h3 className="mb-6 text-lg font-semibold">
                         Account Settings
                     </h3>
                     <form className="mb-6">
                         <div className="mb-8">
-                            <h4 className="font-bold text-xs mb-2 uppercase">
+                            <h4 className="mb-2 text-xs font-bold uppercase">
                                 Account Preference
                             </h4>
 
-                            <div className="flex w-full justify-between items-center mb-6">
+                            <div className="mb-6 flex w-full items-center justify-between">
                                 <div>
-                                    <p className="block font-medium text-sm text-gray-700">
+                                    <p className="block text-sm font-medium text-gray-700">
                                         Email Address
                                     </p>
-                                    <p className="text-xs mb-1 text-gray-500">
+                                    <p className="mb-1 text-xs text-gray-500">
                                         {user.email}
                                     </p>
                                 </div>
 
                                 <button
                                     type="button"
-                                    className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900"
+                                    className="inline-flex items-center border border-transparent bg-gray-900 px-4 py-2  text-xs font-semibold uppercase tracking-widest text-white active:bg-gray-900"
                                     onClick={openModalEmail}
                                 >
                                     Change
                                 </button>
                             </div>
 
-                            <div className="flex w-full justify-between items-center mb-6">
+                            <div className="mb-6 flex w-full items-center justify-between">
                                 <div>
-                                    <p className="block font-medium text-sm text-gray-700">
+                                    <p className="block text-sm font-medium text-gray-700">
                                         Change Password
                                     </p>
-                                    <p className="text-xs mb-1 text-gray-500">
+                                    <p className="mb-1 text-xs text-gray-500">
                                         Password must be at least 8 characters
                                         long
                                     </p>
@@ -276,7 +276,7 @@ export default function Account({ errors, user, auth }) {
 
                                 <button
                                     type="button"
-                                    className="inline-flex items-center px-4 py-2 bg-gray-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest active:bg-gray-900"
+                                    className="inline-flex items-center border border-transparent bg-gray-900 px-4 py-2  text-xs font-semibold uppercase tracking-widest text-white active:bg-gray-900"
                                     onClick={openModalPassword}
                                 >
                                     Change

@@ -6,7 +6,6 @@ import { FilePond, registerPlugin } from "react-filepond";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { useState } from "react";
 
 // Register the plugins
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
@@ -18,7 +17,7 @@ export default function Filepond({ onChange, files, className }) {
                 className={className}
                 files={files}
                 onupdatefiles={onChange}
-                labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                labelIdle='Drag & Drop your files or <span className="filepond--label-action">Browse</span>'
             />
         </>
     );

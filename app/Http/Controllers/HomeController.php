@@ -18,13 +18,12 @@ class HomeController extends Controller
     {
 
         $articles = Article::query()
-            ->select('slug', 'title', 'picture', 'excerpt', 'user_id', 'created_at', 'id')
+            ->select('slug', 'title', 'picture', 'excerpt', 'user_id', 'category_id', 'published_at', 'id')
+            ->with(['category' => fn ($query) => $query->select('id', 'slug', 'name')])
             ->limit(9)
             ->published()
             ->latest()
             ->get();
-
-        // return ArticleItemResource::collection($articles);
 
         return inertia('Home', [
             'articles' => ArticleItemResource::collection($articles)

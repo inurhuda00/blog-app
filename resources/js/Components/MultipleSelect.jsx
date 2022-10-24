@@ -1,6 +1,6 @@
-import React, { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import clsx from "clsx";
+import { Fragment, useState } from "react";
 
 export default function MultipleSelect({ data, selectedItem, onChange }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -32,11 +32,11 @@ export default function MultipleSelect({ data, selectedItem, onChange }) {
                 </div>
             </Listbox.Button>
             {selectedItem.length ? (
-                <small className="mt-2 flex items-center flex-wrap gap-2 text-xs text-blue-600">
+                <small className="mt-2 flex flex-wrap items-center gap-2 text-xs text-blue-600">
                     {selectedItem.map((item) => (
                         <div
                             key={item.id}
-                            className="group flex overflow-hidden select-none rounded bg-gray-100"
+                            className="group flex select-none overflow-hidden rounded bg-gray-100"
                         >
                             <span className="px-2 py-1 font-medium text-black">
                                 {item.name}

@@ -17,7 +17,9 @@ class ArticleSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(5)->hasProfile()->hasArticles(15)->create();
+        User::factory(5)->hasProfile()->hasArticles(15)->create()->each(function ($user) {
+            $user->assignRole('writer');
+        });
 
         Article::get()->each(function ($article) {
             $article->tags()->attach(

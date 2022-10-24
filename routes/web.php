@@ -22,15 +22,11 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
 
-// auth()->loginUsingId(1);
+// auth()->loginUsingId(2);
 
 Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('articles/table', [ArticleController::class, 'table'])->name('articles.table');
-
-Route::get('', HomeController::class)->name('home');
-
-Route::resource('articles', ArticleController::class);
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('category/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
@@ -44,6 +40,21 @@ Route::middleware('auth')->group(function () {
 
     Route::post('links', [SettingsController::class, 'storeLink'])->name('links.store');
     Route::delete('links/{link}', [SettingsController::class, 'destroyLink'])->name('links.destroy');
+});
+
+
+
+
+Route::controller(ArticleController::class)->group(function () {
+    Route::get('articles', 'index')->name('articles.index');
+    Route::post('articles', 'store')->name('articles.store');
+    Route::get('articles/create', 'create')->name('articles.create');
+    Route::get('article/{article}/edit', 'edit')->name('articles.edit');
+    Route::put('article/{article}', 'update')->name('articles.update');
+    Route::delete('article/{article}', 'destroy')->name('articles.destroy');
+    Route::get('articles/table', 'table')->name('articles.table');
+
+    Route::get('{user:username}/{article:slug}', 'show')->scopeBindings()->name('articles.show');
 });
 
 Route::get('{user:username}', [UserController::class, 'show'])->name('users.show');
