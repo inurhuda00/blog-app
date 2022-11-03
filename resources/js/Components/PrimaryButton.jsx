@@ -3,6 +3,7 @@ export default function PrimaryButton({
     className = "",
     processing,
     children,
+    ...props
 }) {
     return (
         <button
@@ -13,6 +14,7 @@ export default function PrimaryButton({
                 } ` + className
             }
             disabled={processing}
+            {...props}
         >
             {children}
         </button>

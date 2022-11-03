@@ -1,10 +1,8 @@
-import { Head } from "@inertiajs/inertia-react";
-import AppLayout from "@/Layouts/AppLayout";
-import Header from "@/Components/Header";
-import ArticleBlock from "@/Components/ArticleBlock";
-import Grid from "@/Components/Grid";
+import Articles from "@/Components/Article";
 import { Container } from "@/Components/Container";
 import Pagination from "@/Components/Pagination";
+import AppLayout from "@/Layouts/AppLayout";
+import { Head } from "@inertiajs/inertia-react";
 
 export default function Show({ category, ...props }) {
     const { data: articles, meta, links } = props.articles;
@@ -13,31 +11,23 @@ export default function Show({ category, ...props }) {
         <>
             <Head title={category.name} />
 
-            <Header>
-                <Header.Title>{category.name}</Header.Title>
-                <Header.Subtitle>
-                    {" "}
-                    This page show the article about {category.name}
-                </Header.Subtitle>
-            </Header>
-
-            <Container>
-                {articles.length ? (
-                    <>
-                        <Grid>
-                            {articles.map((article) => (
-                                <ArticleBlock
-                                    key={article.slug}
-                                    article={article}
-                                />
-                            ))}
-                        </Grid>
-                        <Pagination {...{ meta, links }} />
-                    </>
-                ) : (
-                    <p>no article</p>
-                )}
-            </Container>
+            <section className="mb-5 py-12">
+                <Container>
+                    <div className="mb-5 inline-flex items-center justify-start px-2 md:px-8">
+                        <h2 className="text-lg font-bold uppercase tracking-wide text-gray-500">
+                            {category.name}
+                        </h2>
+                    </div>
+                    {articles.length ? (
+                        <div className="mb-6">
+                            <Articles className="mb-12 grid grid-cols-2 md:grid-cols-3 md:px-3">
+                                <Articles.CardGrid articles={articles} />
+                            </Articles>
+                        </div>
+                    ) : null}
+                </Container>
+                <Pagination {...{ meta, links }} />
+            </section>
         </>
     );
 }

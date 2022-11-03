@@ -23,6 +23,7 @@ class ArticleFactory extends Factory
             'title' => $title = $this->faker->sentence(),
             'slug' => str($title)->slug,
             'excerpt' => $this->faker->sentence(),
+            'picture' => 'images/articles/' . rand(1, 10) . '.jpg',
             'body' => $this->faker->sentence(),
             'status' => $status = rand(0, 3),
             'published_at' => $status === 2 ? now() : null

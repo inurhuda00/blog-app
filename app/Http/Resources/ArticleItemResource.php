@@ -35,6 +35,7 @@ class ArticleItemResource extends JsonResource
             'author' => [
                 'name' => $this->author->name,
                 'username' => $this->author->username,
+                'avatar' => $this->author->avatar_url,
 
             ]
         ] : [];
@@ -43,12 +44,10 @@ class ArticleItemResource extends JsonResource
         return [
             'title' => $this->title,
             'slug' => $this->slug,
-            'picture' => $this->picture ? Storage::url($this->picture) : 'http://localhost/storage/images/articles/image.jpg',
+            'picture' => $this->picture ? Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/image.jpg',
             'time' => [
                 'datetime' => $this->published_at,
-                'published_at' => $this->published_at->format('Y') == now()->format('Y')
-                    ? $this->published_at->format('F d , Y')
-                    : $this->published_at->format('d M, Y'),
+                'published_at' => $this->published_at->format('M d , Y'),
             ],
             ...$excerpt,
             ...$author,

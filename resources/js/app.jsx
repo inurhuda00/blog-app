@@ -1,13 +1,12 @@
 import "filepond/dist/filepond.min.css";
 
-import "./bootstrap";
 import "../css/app.css";
+import "./bootstrap";
 
-import React from "react";
-import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/inertia-react";
 import { InertiaProgress } from "@inertiajs/progress";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+import { createRoot } from "react-dom/client";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "Laravel";
@@ -29,7 +28,7 @@ createInertiaApp({
 InertiaProgress.init({
     // The delay after which the progress bar will
     // appear during navigation, in milliseconds.
-    delay: 150,
+    delay: 50,
 
     // The color of the progress bar.
     color: "#29d",

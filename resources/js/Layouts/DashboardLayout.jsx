@@ -14,10 +14,10 @@ export default function Dashboard({ children }) {
     }, [flash]);
 
     return (
-        <div>
+        <>
             <Navigation />
             {auth.user ? (
-                <Container className="bg-slate-900">
+                <Container className="px-4 ">
                     <nav className="flex justify-start space-x-4 py-2">
                         <Link
                             href={route("dashboard")}
@@ -41,11 +41,10 @@ export default function Dashboard({ children }) {
                         >
                             Account
                         </Link>
-
                         <Link
-                            href={route("settings.profile")}
+                            href={route("profile.show")}
                             className={clsx(
-                                route().current("settings.profile")
+                                route().current("profile.show")
                                     ? "bg-gray-800 text-white"
                                     : null,
                                 "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
@@ -71,9 +70,9 @@ export default function Dashboard({ children }) {
             ) : null}
             <Toaster />
 
-            <div className="pt-8">{children}</div>
+            <div className="px-4 pt-8">{children}</div>
 
             <Footer />
-        </div>
+        </>
     );
 }

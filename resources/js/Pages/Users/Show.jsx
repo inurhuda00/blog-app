@@ -1,11 +1,11 @@
-import { Head, Link } from "@inertiajs/inertia-react";
-import AppLayout from "@/Layouts/AppLayout";
-import Header from "@/Components/Header";
-import ArticleBlock from "@/Components/ArticleBlock";
-import Grid from "@/Components/Grid";
+import Articles from "@/Components/Article";
 import { Container } from "@/Components/Container";
 import Pagination from "@/Components/Pagination";
 import PrimaryButton from "@/Components/PrimaryButton";
+import Section from "@/Components/Section";
+import SocialsLink from "@/Components/SocialsLink";
+import AppLayout from "@/Layouts/AppLayout";
+import { Head, Link } from "@inertiajs/inertia-react";
 
 export const socials = {
     website: {
@@ -123,6 +123,21 @@ export const socials = {
             </svg>
         ),
     },
+    whatsapp: {
+        class: "text-green-500",
+        icon: (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="h-5 w-5"
+                viewBox="0 0 16 16"
+            >
+                <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+            </svg>
+        ),
+    },
 };
 
 export default function Show({ auth, user, ...props }) {
@@ -132,59 +147,43 @@ export default function Show({ auth, user, ...props }) {
         <>
             <Head title={user.username} />
 
-            <Header>
-                <Header.Title>{user.name}</Header.Title>
-                <Header.Subtitle> {user.joined}</Header.Subtitle>
+            <div className="mx-auto mt-12 flex max-w-2xl flex-col items-center justify-center py-6">
+                <img
+                    className="mb-6 h-12 w-12 rounded-full border-2 border-gray-900"
+                    width={20}
+                    height={20}
+                    src={user.avatar}
+                    alt="Rounded avatar"
+                />
+                <h1 className="mb-4 text-xl font-semibold">{user.name}</h1>
+                <p className="mb-4 text-sm">{user.joined}</p>
                 {user.bio && (
-                    <div className="mt-6 text-white">
-                        <p dangerouslySetInnerHTML={{ __html: user.bio }} />
+                    <div className="mt-2">
+                        <h2 dangerouslySetInnerHTML={{ __html: user.bio }} />
                     </div>
                 )}
-                <div className="mt-3 flex items-center justify-start gap-2">
-                    {user.links && user.links.length
-                        ? user.links.map((link, i) => (
-                              <a
-                                  href={link.full_url}
-                                  key={i}
-                                  target="_blank"
-                                  rel="noopener"
-                                  className={`bg-shark-200/60 flex h-8 w-10 items-center justify-center rounded-lg ${
-                                      socials[link.name]
-                                          ? socials[link.name].class
-                                          : socials["website"].class
-                                  }  dark:border-shark-600 dark:bg-shark-900`}
-                              >
-                                  {socials[link.name]
-                                      ? socials[link.name].icon
-                                      : socials["website"].icon}
-                              </a>
-                          ))
-                        : null}
-                </div>
+
+                <SocialsLink user={user} socials={socials} />
                 {auth.user?.username === user.username && (
                     <PrimaryButton className="mt-6">
-                        <Link href={route("settings.profile")}>edit</Link>
+                        <Link href={route("profile.show")}>edit</Link>
                     </PrimaryButton>
                 )}
-            </Header>
+            </div>
 
-            <Container>
-                {articles.length ? (
-                    <>
-                        <Grid>
-                            {articles.map((article) => (
-                                <ArticleBlock
-                                    key={article.slug}
-                                    article={article}
-                                />
-                            ))}
-                        </Grid>
-                        <Pagination {...{ meta, links }} />
-                    </>
-                ) : (
-                    <p>no article</p>
-                )}
-            </Container>
+            <section className="mb-5 py-12">
+                <Container>
+                    <Section.Title title="Published" />
+                    {articles.length ? (
+                        <div className="mb-6">
+                            <Articles className="mb-12 grid grid-cols-2 md:grid-cols-3 md:px-3">
+                                <Articles.CardGrid articles={articles} />
+                            </Articles>
+                        </div>
+                    ) : null}
+                </Container>
+                <Pagination {...{ meta, links }} />
+            </section>
         </>
     );
 }

@@ -27,6 +27,7 @@ class UserProfileResource extends JsonResource
             'name' => $this->name,
             'username' => $this->username,
             'joined' => $this->created_at->diffForHumans(),
+            'avatar' => $this->avatar_url,
             ...$profile,
 
         ];

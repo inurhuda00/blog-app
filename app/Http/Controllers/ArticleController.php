@@ -67,10 +67,10 @@ class ArticleController extends Controller
                 'category' => fn ($query) => $query->select('name', 'slug', 'id')
             ])
             ->whereBelongsTo($request->user(), 'author')
-            // ->when(
-            //     // $request->user() is not admin
-            // , fn($query) => $query->whereBelongsTo($request->user(), 'author')
-            // )
+            ->when(
+                $request->user()->hasRole('admin'),
+                fn ($query) => $query->whereBelongsTo($request->user(), 'author')
+            )
             ->when(
                 $request->q,
                 fn ($query) =>
@@ -99,7 +99,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::query()
-            ->select('slug', 'title', 'excerpt', 'user_id', 'published_at', 'id')
+            ->select('slug', 'title', 'picture', 'excerpt', 'user_id', 'category_id', 'published_at', 'id')
             ->with([
                 'tags' => fn ($query) => $query->select('slug', 'name'),
                 'author'
@@ -107,8 +107,6 @@ class ArticleController extends Controller
             ->published()
             ->latest()
             ->fastPaginate();
-
-        // return ArticleItemResource::collection($articles);
 
         return inertia('Articles/Index', [
             'articles' => ArticleItemResource::collection($articles)
@@ -168,27 +166,25 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, User $user, Article $article)
-
     {
         $currentArticle = $article->load([
             'tags' => fn ($query) => $query->select('name', 'slug'),
             'category' => fn ($query) => $query->select('id', 'name', 'slug'),
-            'author' => fn ($query) => $query->select('id', 'name', 'username')
+            'author' => fn ($query) => $query->select('id', 'name', 'username', 'avatar')
 
         ]);
 
         $articles = Article::query()
-            ->select('title', 'slug', 'user_id', 'published_at')
+            ->select('title', 'slug', 'user_id', 'category_id', 'published_at')
             ->with([
-                'author' => fn ($query) => $query->select('id', 'name', 'username'),
+                'author' => fn ($query) => $query->select('id', 'name', 'username', 'avatar'),
+                'category' => fn ($query) => $query->select('id', 'name', 'slug'),
             ])
             ->whereNot('slug', $article->slug)
             ->whereBelongsTo($article->category)
             ->published()
             ->limit(10)
             ->get();
-
-        // return ArticleItemResource::collection($articles);
 
         return inertia('Articles/Show', [
             'can' => [
@@ -238,8 +234,8 @@ class ArticleController extends Controller
             'slug' => $slug =  str($title)->slug(),
             'excerpt' => $request->excerpt,
             'category_id' => $request->category_id,
-            'status' => $status = $request->status,
-            'published_at' => $status === 2 ? now() : null,
+            'status' => $status = intval($request->status),
+            'published_at' => $status == ArticleStatus::PUBLISHED->value ? now() : null,
             'body' => $request->body,
             'picture' => $request->hasFile('picture')
                 ? $picture->storeAs('images/articles', $slug . '.' . $picture->extension(), 'public')

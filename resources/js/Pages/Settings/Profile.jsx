@@ -5,26 +5,73 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import Textarea from "@/Components/Textarea";
 import DashboardLayout from "@/Layouts/DashboardLayout";
+import { Dialog, Transition } from "@headlessui/react";
 import { Inertia } from "@inertiajs/inertia";
 import { useForm } from "@inertiajs/inertia-react";
+import { Fragment, useRef, useState } from "react";
 import { socials } from "../Users/Show";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
 
 export default function Profile({ user, linkTypes, errors }) {
     const { data, setData } = useForm({
         name: user.name,
         username: user.username,
         bio: user.bio,
+        avatar: null,
     });
+
     const handleChange = (e) => setData(e.target.name, e.target.value);
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        Inertia.post(route("settings.profile.update"), {
-            ...data,
-            _method: "PUT",
+        Inertia.post(
+            route("profile.update"),
+            {
+                ...data,
+                _method: "PUT",
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => clearPhotoFileInput(),
+            }
+        );
+    };
+
+    const [photoPreview, setPhotoPreview] = useState("");
+    const photoInput = useRef(null);
+
+    const updataPhotoPreview = () => {
+        const photo = photoInput.current.files[0];
+        setData("avatar", photo);
+
+        if (!photo) return;
+
+        let reader = new FileReader();
+
+        reader.onload = (e) => {
+            const { result } = e.target;
+            if (result) {
+                setPhotoPreview(result);
+            }
+        };
+        reader.readAsDataURL(photo);
+    };
+
+    const selectNewPhoto = () => {
+        return photoInput.current.click();
+    };
+    const deletePhoto = () => {
+        Inertia.delete(route("current-user-photo.destroy"), {
+            preserveScroll: true,
+            onSuccess: () => {
+                clearPhotoFileInput();
+                setPhotoPreview(null);
+            },
         });
+    };
+    const clearPhotoFileInput = () => {
+        if (photoInput.current.value) {
+            photoInput.current.value = null;
+        }
     };
 
     let [isOpen, setIsOpen] = useState(false);
@@ -192,10 +239,73 @@ export default function Profile({ user, linkTypes, errors }) {
                     <h3 className="mb-6 text-lg font-semibold">
                         Customize Profile
                     </h3>
+
                     <form onSubmit={handleSubmit} className="mb-6">
-                        <h4 className="mb-2 text-xs font-bold uppercase">
+                        <h4 className="mb-4 text-xs font-bold uppercase">
                             Profile Information
                         </h4>
+
+                        <div className="mb-6 items-center">
+                            <input
+                                ref={photoInput}
+                                type="file"
+                                className="hidden"
+                                name="photo"
+                                onChange={updataPhotoPreview}
+                            />
+
+                            <InputLabel for="photo" value="Avatar" />
+                            <p className="mb-1 text-xs text-gray-500">
+                                Set a display name. This does not change your
+                                username.
+                            </p>
+
+                            <div className="mt-4 flex items-center justify-start space-x-4">
+                                <div className="group relative h-20 w-20">
+                                    {photoPreview ? (
+                                        <img
+                                            src={photoPreview}
+                                            alt={user.name}
+                                            className="h-20 w-20 rounded-full border object-cover"
+                                        />
+                                    ) : (
+                                        <img
+                                            src={user.avatar}
+                                            alt={user.name}
+                                            className="h-20 w-20 rounded-full border object-cover"
+                                        />
+                                    )}
+
+                                    <button
+                                        type="button"
+                                        className="absolute inset-0 hidden items-center justify-center rounded-full bg-black/40 text-white transition duration-150 ease-out hover:ease-in group-hover:flex"
+                                        onClick={selectNewPhoto}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 16 16"
+                                            className="h-6 w-6 fill-current stroke-2"
+                                        >
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <PrimaryButton
+                                    type="button"
+                                    className="mt-2"
+                                    onClick={deletePhoto}
+                                >
+                                    Remove
+                                </PrimaryButton>
+                            </div>
+
+                            {errors.avatar && <Error value={errors.avatar} />}
+                        </div>
 
                         <div className="mb-6">
                             <InputLabel forInput="name" value="Display Name" />
@@ -238,7 +348,7 @@ export default function Profile({ user, linkTypes, errors }) {
                                 name="bio"
                                 id="bio"
                                 onChange={handleChange}
-                                value={data.bio}
+                                value={data.bio ? data.bio : ""}
                             />
                             {errors.bio && <Error value={errors.bio} />}
                         </div>

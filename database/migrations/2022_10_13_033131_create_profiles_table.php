@@ -19,7 +19,7 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->string('bio')->nullable();
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->unique();
         });
 
         Schema::create('links', function (Blueprint $table) {

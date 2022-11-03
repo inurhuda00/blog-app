@@ -49,7 +49,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => !is_null($request->user()) ?
                     [
                         ...$request->user()->only(['id', 'name', 'username', 'email']),
-                        'hasRole' => $request->user()->hasAnyRole(Role::all())
+                        'hasRole' => $request->user()->hasAnyRole(Role::all()),
+                        'avatar' => $request->user()->avatar_url
                     ]
                     : null,
             ],

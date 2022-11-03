@@ -29,12 +29,10 @@ class Article extends Model
         return 'slug';
     }
 
-    // public function picture(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: fn ($value) => env('APP_URL') . Storage::url($value)
-    //     );
-    // }
+    public function getUrlAttribute()
+    {
+        return route('articles.show', [$this->author, $this->slug]);
+    }
 
     public function tags()
     {
@@ -48,7 +46,7 @@ class Article extends Model
 
     public function author()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'username');
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'username', 'avatar');
     }
 
     public function scopePublished($query)

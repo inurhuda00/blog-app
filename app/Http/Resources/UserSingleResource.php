@@ -28,6 +28,7 @@ class UserSingleResource extends JsonResource
         return  [
             'name' => $this->name,
             'username' => $this->username,
+            'avatar' => $this->avatar_url,
             'email' => $this->email,
             ...$profile
         ];

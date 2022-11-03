@@ -59,7 +59,7 @@ export default function ResponsiveNavigation() {
                             >
                                 My profile ({auth.user.username})
                             </DropdownMenu.Link>
-                            <DropdownMenu.Link href={route("settings.profile")}>
+                            <DropdownMenu.Link href={route("profile.show")}>
                                 Settings
                             </DropdownMenu.Link>
                             <DropdownMenu.Divider />
@@ -76,6 +76,7 @@ export default function ResponsiveNavigation() {
                                     >
                                         My articles
                                     </DropdownMenu.Link>
+                                    <DropdownMenu.Divider />
                                 </>
                             ) : null}
                             <DropdownMenu.Link

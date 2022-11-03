@@ -51,10 +51,11 @@ class UserController extends Controller
     {
         $articles = Article::query()
             ->whereBelongsTo($user, 'author')
-            ->select('slug', 'title', 'excerpt', 'user_id', 'published_at', 'id')
+            ->select('slug', 'title', 'excerpt', 'picture', 'user_id', 'category_id', 'published_at', 'id')
             ->with([
                 'tags' => fn ($query) => $query->select('slug', 'name'),
-                'author'
+                'category' => fn ($query) => $query->select('id', 'name', 'slug'),
+                'author',
             ])
             ->published()
             ->latest()
