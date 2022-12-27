@@ -1,8 +1,9 @@
 import Articles from "@/Components/Article";
 import { Container } from "@/Components/Container";
+import PrimaryButton from "@/Components/PrimaryButton";
 import Section from "@/Components/Section";
 import AppLayout from "@/Layouts/AppLayout";
-import { Head } from "@inertiajs/inertia-react";
+import { Head, Link } from "@inertiajs/inertia-react";
 
 export default function Home({ articles }) {
     return (
@@ -85,6 +86,12 @@ export default function Home({ articles }) {
                         </div>
                     </div>
                 </Container>
+            </section>
+
+            <section className="flex items-center justify-center">
+                <Link href={route("articles.index")}>
+                    <PrimaryButton>show more</PrimaryButton>
+                </Link>
             </section>
         </>
     );

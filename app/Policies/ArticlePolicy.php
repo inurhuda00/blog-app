@@ -17,7 +17,7 @@ class ArticlePolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny()
+    public function viewAny(?User $user)
     {
         return $this->allow();
     }
@@ -31,8 +31,7 @@ class ArticlePolicy
      */
     public function view(?User $user, Article $article)
     {
-
-        if ($article->published()) {
+        if ($article->status === ArticleStatus::PUBLISHED) {
             return $this->allow();
         }
 

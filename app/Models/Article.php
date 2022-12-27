@@ -54,11 +54,6 @@ class Article extends Model
         return $query->where('status', ArticleStatus::PUBLISHED)->whereNotNull('published_at');
     }
 
-    public function scopeStatus($query, ArticleStatus $status)
-    {
-        return $query->where('visibility', $status);
-    }
-
     public function scopeNext($query)
     {
         return $query->where('id', '>', $this->id)->with('user')->orderBy('id', 'asc');
