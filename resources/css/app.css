@@ -3,3 +3,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Scoped to the editor */
+.ProseMirror p {
+    @apply p-0;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+.ProseMirror h1.is-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
