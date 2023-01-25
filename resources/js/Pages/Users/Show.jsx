@@ -149,7 +149,7 @@ export default function Show({ auth, user, ...props }) {
 
             <div className="mx-auto mt-12 flex max-w-2xl flex-col items-center justify-center py-6">
                 <img
-                    className="mb-6 h-12 w-12 rounded-full border-2 border-gray-900"
+                    className="mb-6 h-24 w-24 rounded-full border-2 border-gray-900"
                     width={20}
                     height={20}
                     src={user.avatar}
@@ -158,7 +158,7 @@ export default function Show({ auth, user, ...props }) {
                 <h1 className="mb-4 text-xl font-semibold">{user.name}</h1>
                 <p className="mb-4 text-sm">{user.joined}</p>
                 {user.bio && (
-                    <div className="mt-2">
+                    <div className="mt-2 text-center">
                         <h2 dangerouslySetInnerHTML={{ __html: user.bio }} />
                     </div>
                 )}

@@ -27,6 +27,9 @@ require __DIR__ . '/auth.php';
 // auth()->loginUsingId(2);
 
 Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('editor', function () {
+    return inertia("Editor");
+});
 
 Route::get('/', HomeController::class)->name('home');
 
@@ -44,9 +47,6 @@ Route::middleware('auth')->group(function () {
     Route::post('links', [LinkController::class, 'store'])->name('links.store');
     Route::delete('links/{link}', [LinkController::class, 'destroy'])->name('links.destroy');
 });
-
-
-
 
 Route::controller(ArticleController::class)->group(function () {
     Route::get('articles', 'index')->name('articles.index');

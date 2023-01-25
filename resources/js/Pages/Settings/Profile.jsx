@@ -278,7 +278,7 @@ export default function Profile({ user, linkTypes, errors }) {
 
                                     <button
                                         type="button"
-                                        className="absolute inset-0 hidden items-center justify-center rounded-full bg-black/40 text-white transition duration-150 ease-out hover:ease-in group-hover:flex"
+                                        className="absolute inset-0 hidden h-20 w-20 items-center justify-center rounded-full bg-black/40 text-white transition duration-150 ease-out hover:ease-in group-hover:flex"
                                         onClick={selectNewPhoto}
                                     >
                                         <svg
