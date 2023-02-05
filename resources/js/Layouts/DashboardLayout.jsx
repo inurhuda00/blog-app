@@ -1,5 +1,5 @@
 import { Container } from "@/Components/Container";
-import { Link, usePage } from "@inertiajs/inertia-react";
+import { Link, usePage } from "@inertiajs/react";
 import clsx from "clsx";
 import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";

@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/inertia-react";
+import { Link, usePage } from "@inertiajs/react";
 import DropdownMenu from "../Components/DropdownMenu";
 import NavLink from "./NavLink";
 

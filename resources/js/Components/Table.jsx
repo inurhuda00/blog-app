@@ -1,5 +1,5 @@
 import { Menu } from "@headlessui/react";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import clsx from "clsx";
 
 const ChevronDownIcon = ({ ...props }) => (

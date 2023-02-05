@@ -3,6 +3,7 @@ import Settings from "@/Components/Editor/Settings";
 import Dropcursor from "@tiptap/extension-dropcursor";
 import { EditorContent, useEditor } from "@tiptap/react";
 
+import { useForm } from "@inertiajs/react";
 import CharacterCount from "@tiptap/extension-character-count";
 import Document from "@tiptap/extension-document";
 import { Link as TiptapLink } from "@tiptap/extension-link";
@@ -10,7 +11,19 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Typography from "@tiptap/extension-typography";
 import StarterKit from "@tiptap/starter-kit";
 
-export default function Editor(props) {
+const CHAR_LIMIT = 5000;
+
+export default function Editor({ auth, article, statuses }) {
+    const { data, setData } = useForm({
+        title: article.title,
+        excerpt: article.excerpt,
+        category_id: article.category,
+        body: article.body,
+        picture: article.picture ? [article.picture] : "",
+        tags: article.tags,
+        status: statuses.find((status) => status.id == article.status),
+    });
+
     const editor = useEditor({
         editorProps: {
             attributes: {
@@ -21,12 +34,14 @@ export default function Editor(props) {
             Typography,
             Document.extend({
                 content: "heading block*",
+                topNode: true,
             }),
             StarterKit.configure({
                 document: false,
                 heading: {
                     levels: [1, 2, 3, 4],
                 },
+                horizontalRule: {},
             }),
             Placeholder.configure({
                 showOnlyCurrent: false,
@@ -40,7 +55,7 @@ export default function Editor(props) {
             }),
             Dropcursor,
             CharacterCount.configure({
-                limit: 500,
+                limit: CHAR_LIMIT,
             }),
             TiptapLink.configure({
                 openOnClick: false,
@@ -52,61 +67,103 @@ export default function Editor(props) {
           <h1>
           It’ll always have a heading …
           </h1>
-          <p>
-            this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-          </p>
-          <ul>
-            <li>
-              That’s a bullet list with one …
-            </li>
-            <li>
-              … or two list items.
-            </li>
-          </ul>
-          <p>
-            Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-          </p>
-          <pre><code class="language-css">body {
-      display: none;
-    }</code></pre>
-          <p>
-            I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-          </p>
-          <blockquote>
-            Wow, that’s amazing. Good work, boy! 👏
-            <br />
-            — Mom
-          </blockquote>
-          <h2>
-          Hi there,
-        </h2>
-        <p>
-          this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-        </p>
-        <ul>
-          <li>
-            That’s a bullet list with one …
-          </li>
-          <li>
-            … or two list items.
-          </li>
-        </ul>
-        <p>
-          Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-        </p>
-        <pre><code class="language-css">body {
-    display: none;
-  }</code></pre>
-        <p>
-          I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-        </p>
-        <blockquote>
-          Wow, that’s amazing. Good work, boy! 👏
-          <br />
-          — Mom
-        </blockquote>
+          
+            <p>"Tuhaaaaaaaaaaan, mereka memang keparaaaaaat!"</p>
+            <p>
+                Aku tentu mendengar bunyi yang amat keras itu. Hampir menyerupai bunyi kaleng yang remuk
+                terlindas benda berat, tetapi lebih kencang, volumenya sepuluh kali lipat. Aku berlari
+                kencang menuju sumber suara itu. Firasatku yang tak beres membuat langkahku berkejaran tanpa
+                aturan, semakin cepat. Aku bisa merasakannya. Aku bisa menciumnya. Berpuluh-puluh tahun aku
+                hidup di wilayah ini. Aku sangat hafal dan sejauh ini aku tak pernah meleset. Bunyi macam
+                itu, aroma sesudahnya, tak salah lagi, ini bau kematian!
+            </p>
+            <p>
+                Apa kubilang! Aku tak mungkin salah! Duhai betapa bengisnya takdir. Satu hal yang sampai
+                saat ini belum bisa kupahami cara kerjanya. Padahal baru beberapa saat lalu aku
+                berjalan-jalan mencari makan bersamanya. Dia sedikit membagi cerita. Katanya, dia sedang
+                mengandung, dan sampai saat ini belum ditemukan kejelasan siapa gerangan ayah dari anak yang
+                sedang dikandungnya. "Akibat terlalu banyak seks bebas," katanya. Belum sempat aku memberi
+                jawaban untuk keluh kesah terakhirnya itu, dan kini ia keburu mati. Terkapar di pinggir
+                jalan. Sebuah mobil plat merah dengan kecepatan tinggi mengoyak tengkorak bagian
+                belakangnya.
+            </p>
+            <p>
+                Mobilnya lari. Tidak bertanggung jawab kepada nyawanya, juga nyawa yang sedang dikandungnya.
+                Tidak pula sekadar berhenti atau menampakkan raut wajah sedih. Yang seperti ini pun aku
+                sudah hafal. Aku pergi menuju tubuh kaku itu, aku kelilingi meski tak tahu harus berbuat
+                apa. Ada beberapa yang berkerumun. Aku hampiri satu per satu dari mereka yang dengan mata
+                batu hanya berkumpul memandangi mayat anyir calon ibu dan kandungannya itu.
+            </p>
+            <p>Aku berteriak minta bantuan, "ayo angkat!"</p>
+            <p>Mereka mematung.</p>
+            <p>Aku coba lagi, "ayo sorong dia ke tepian!"</p>
+            <p>Mereka malah memandangiku.</p>
+            <p>
+                Aku tak patah, "kalau begitu setidaknya tutupi dia dengan sesuatu, darah adalah momok bagi
+                kehidupan, adalah kesenyapan dari tiap kurun zaman!"
+            </p>
+            <p>
+                Mereka hanya dingin, mereka benar-benar dingin. Membuat seluruhnya juga jadi dingin. Darah
+                menjadi lebih cepat rekat dengan aspal jalan yang basah. Mereka tetap dingin dan aku tetap
+                tidak mengerti apa yang harus kuperbuat. Bahkan kematian tak menggetarkan mereka. Mungkin
+                karena bagi mereka kami hanya umpatan. Hanya pelampiasan atas nasib sial. Semacam lubang
+                ventilasi ketika semua tak lagi tertangguhkan. Jauh di dalam diri mereka, sesungguhnya kami
+                amat hidup. Bahkan telah menyatu dengan darah, bibir, mulut, hati mereka sehari-hari. Mereka
+                bawa kami ke dalam setiap percakapan, dalam setiap dongeng-dongeng nasihat kebajikan, atau
+                ke dalam seburuk-buruknya perumpamaan. Bagi mereka kami adalah kebaikan, juga keburukan.
+                Simbol cinta, juga simbol kebencian.
+            </p>
+            <p>
+                Mereka meletakkan kami semau-maunya. Memperlakukan kami seenaknya. Padahal kami amat hidup
+                di dalam kamus budaya mereka. Tetapi kenapa, apakah begitu sukar untuk sekadar mengubur
+                tubuh beku beserta anak yang dikandungnya itu?
+            </p>
+            <p>"Tuhaaaaaan, mereka memang keparaaaaat!"</p>
+            <p><strong>***</strong></p>
+            <p>"Halo Bu, ada apa?"</p>
+            <p>
+                "Setelah seluruh pekerjaanmu di kantor selesai, cepat pulang ke rumah. Parsi dan keluarganya
+                datang ke rumah mencarimu."
+            </p>
+            <p>"Loh, ada apa, Bu?"</p>
+            <p>"Minta pertanggung jawaban."</p>
+            <p>
+                Suara Ibu di seberang terputus seketika. Tiga puluh tujuh&nbsp;<em>notif</em>&nbsp;telepon
+                dan&nbsp;<em>chat</em>&nbsp;di&nbsp;<em>WhatsApp</em>&nbsp;tidak kubuka. Segera kukemasi
+                seluruh barang-barangku di ruang kerja dan memacu penuh kecepatan mobil. Dari nada bicaranya
+                Ibu nampak serius. Ini pasti bukan masalah sepele. Dua hari lalu aku memang meniduri Parsi.
+                Tapi aku pakai kondom! Harusnya yang datang ke rumah adalah Nani, atau Yanis, atau seorang
+                perempuan entah siapa namanya yang tempo lalu mabuk berat dan menumpang di mobilku. Atau
+                seorang anak gadis tetangga yang kebetulan minta kuajari kiat-kiat lolos tes CPNS waktu
+                rumahnya kosong. Atau Kirana, dari beberapa wanita di kantor memang hanya dia yang mau
+                diajak tidur oleh siapa saja. Atau...
+            </p>
+            <p><em>Braaaaaak</em>!</p>
+            <p>
+                Nama-nama itu seketika lenyap dari tempurung kepalaku. Celaka, aku menabrak sesuatu. Sedikit
+                kuperlambat laju mobilku. Kutengok spion untuk memastikan gerangan apa yang baru saja
+                kutabrak karena suaranya memang sangat keras.
+            </p>
+            <p>"Bajingan, anjing bunting!"</p>
+            <p>
+                Masa bodoh pikirku. Melaju terus saja. Aku masih mencari satu nama terakhir yang kutiduri
+                dalam sepekan terakhir ini.
+            </p>
+            <p>
+                <strong><em>Sinangoh Prendeng, Desember 2019.</em></strong>
+            </p>
+            <p></p>
+            <p>
+                Sobrun Jamil, tinggal dan bekerja di Pekalongan. Ikut ngurusi hal-hal kecil di Buletin
+                Lintang. Kalau mau jadi saudara, bisa lewat Instagram: @sobrunjamil_ atau hubungi nomor
+                WhatsApp: 082141506300.
+            </p>
+            <p>&nbsp;</p>
+
         `,
     });
+
+    if (!editor) return null;
 
     return (
         <EditorWrapper className="absolute inset-0">
@@ -137,7 +194,12 @@ export default function Editor(props) {
                 </main>
                 <aside className="relative inset-0 hidden w-auto shrink-0 overflow-auto border-l md:block">
                     <Settings editor={editor}>
-                        <Settings.Status defaultOpen />
+                        <Settings.Status
+                            defaultOpen
+                            auth={auth}
+                            limit={CHAR_LIMIT}
+                            data={data}
+                        />
                     </Settings>
                 </aside>
                 {/* start mobile*/}
@@ -186,7 +248,7 @@ export default function Editor(props) {
                                         </button>
                                         <div className="flex min-h-[3.5rem] w-full items-center justify-start p-4">
                                             <span className="w-2/5 text-sm">
-                                                Visibility{" "}
+                                                Visibility
                                             </span>
                                             <button className="text-sm">
                                                 public
@@ -194,8 +256,7 @@ export default function Editor(props) {
                                         </div>
                                         <div className="flex min-h-[3.5rem] w-full items-center justify-start p-4">
                                             <span className="w-2/5 text-sm">
-                                                {" "}
-                                                URL{" "}
+                                                URL
                                             </span>
                                             <button className="text-sm">
                                                 theme.test/hello-world
@@ -203,7 +264,7 @@ export default function Editor(props) {
                                         </div>
                                         <div className="flex min-h-[3.5rem] w-full items-center justify-start p-4">
                                             <span className="w-2/5 text-sm">
-                                                Feature{" "}
+                                                Feature
                                             </span>
                                             <button className="text-sm">
                                                 true
@@ -211,11 +272,10 @@ export default function Editor(props) {
                                         </div>
                                         <div className="flex min-h-[3.5rem] w-full items-center justify-start p-4">
                                             <span className="w-2/5 text-sm">
-                                                {" "}
-                                                Penulis{" "}
+                                                Penulis
                                             </span>
                                             <button className="text-sm">
-                                                suckpoet
+                                                {auth.user.username}
                                             </button>
                                         </div>
                                     </li>
@@ -230,7 +290,7 @@ export default function Editor(props) {
     );
 }
 
-const ActionsButton = () => {
+const ActionsButton = (editor) => {
     return (
         <div className="flex items-center justify-end gap-x-4 pr-4">
             <button className="initial-flex items-center justify-center border border-black px-3 py-1 text-xs">

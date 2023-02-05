@@ -1,10 +1,9 @@
-import { Head, useForm } from "@inertiajs/inertia-react";
-import AppLayout from "@/Layouts/AppLayout";
-import Header from "@/Components/Header";
-import { Container } from "@/Components/Container";
-import { Inertia } from "@inertiajs/inertia";
 import { ArticleForm } from "@/Components/ArticleForm";
+import { Container } from "@/Components/Container";
+import Header from "@/Components/Header";
 import PrimaryButton from "@/Components/PrimaryButton";
+import AppLayout from "@/Layouts/AppLayout";
+import { Head, useForm } from "@inertiajs/react";
 
 export default function Create({ statuses, tags }) {
     const { data, setData } = useForm({

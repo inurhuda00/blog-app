@@ -1,4 +1,3 @@
-import { Inertia } from "@inertiajs/inertia";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 

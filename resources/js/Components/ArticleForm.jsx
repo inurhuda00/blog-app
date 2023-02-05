@@ -1,4 +1,4 @@
-import { usePage } from "@inertiajs/inertia-react";
+import { usePage } from "@inertiajs/react";
 import Editor from "./Editor";
 import Error from "./Error";
 import Filepond from "./Filepond";

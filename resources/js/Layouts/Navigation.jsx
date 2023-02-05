@@ -2,7 +2,7 @@ import ApplicationLogo from "@/Components/ApplicationLogo";
 import DropdownMenu from "@/Components/DropdownMenu";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavigation from "@/Components/ResponsiveNavigation";
-import { usePage } from "@inertiajs/inertia-react";
+import { usePage } from "@inertiajs/react";
 
 export default function Navbar() {
     const { auth, categories_global } = usePage().props;

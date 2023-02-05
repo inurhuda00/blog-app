@@ -1,5 +1,5 @@
 import Image from "@/Components/Image";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import clsx from "clsx";
 
 const InlineBlock = ({

@@ -2,7 +2,7 @@ import Articles from "@/Components/Article";
 import { Container } from "@/Components/Container";
 import Pagination from "@/Components/Pagination";
 import AppLayout from "@/Layouts/AppLayout";
-import { Head } from "@inertiajs/inertia-react";
+import { Head } from "@inertiajs/react";
 
 export default function Index({ ...props }) {
     const { data: articles, meta, links } = props.articles;

@@ -108,7 +108,7 @@ export const TopBar = ({ editor }) => {
         <nav className="flex-1 items-center justify-start pr-4 md:flex">
             <div className="flex items-center gap-x-2 pl-4 md:gap-x-4 md:pl-6">
                 <button
-                    className="w-full border border-black bg-white p-1 disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-500 disabled:shadow-none"
+                    className=" border border-black bg-white p-1 disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-500 disabled:shadow-none"
                     onClick={() => editor.chain().focus().undo().run()}
                     disabled={!editor.can().chain().focus().undo().run()}
                 >
@@ -127,7 +127,7 @@ export const TopBar = ({ editor }) => {
                     </svg>
                 </button>
                 <button
-                    className="w-full border border-black bg-white p-1 disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-500 disabled:shadow-none"
+                    className=" border border-black bg-white p-1 disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-500 disabled:shadow-none"
                     onClick={() => editor.chain().focus().redo().run()}
                     disabled={!editor.can().chain().focus().redo().run()}
                 >

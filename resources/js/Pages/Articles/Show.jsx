@@ -4,7 +4,7 @@ import Image from "@/Components/Image";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SocialsLink from "@/Components/SocialsLink";
 import AppLayout from "@/Layouts/AppLayout";
-import { Head, Link } from "@inertiajs/inertia-react";
+import { Head, Link } from "@inertiajs/react";
 import { socials } from "../Users/Show";
 
 export default function Show({ auth, ...props }) {

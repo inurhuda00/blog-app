@@ -14,10 +14,11 @@ const Settings = (props) => {
 };
 
 function Status(props) {
+    const { auth, limit, data } = props;
+
     const { editor } = useContext(settingsContext);
 
     if (!editor) return null;
-
     return (
         <Disclosure as="ul" className="relative border-b" {...props}>
             {({ open }) => (
@@ -49,19 +50,15 @@ function Status(props) {
                             <button>public</button>
                         </div>
                         <div className="flex h-10 w-full items-center justify-start p-4">
-                            <span className="w-2/5"> URL </span>
-                            <button>theme.test/hello-world</button>
-                        </div>
-                        <div className="flex h-10 w-full items-center justify-start p-4">
                             <span className="w-2/5">Feature </span>
                             <button>true</button>
                         </div>
                         <div className="flex h-10 w-full items-center justify-start p-4">
                             <span className="w-2/5"> Penulis </span>
-                            <button>suckpoet</button>
+                            <button>{auth.user.username}</button>
                         </div>
                         <div className="flex h-10 w-full items-center justify-start p-4">
-                            {editor.storage.characterCount.characters()}/{500}{" "}
+                            {editor.storage.characterCount.characters()}/{limit}{" "}
                             characters
                             <br />
                             {editor.storage.characterCount.words()} words

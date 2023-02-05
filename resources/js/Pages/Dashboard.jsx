@@ -1,7 +1,6 @@
-import React from "react";
-import { Head } from "@inertiajs/inertia-react";
-import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Container } from "@/Components/Container";
+import DashboardLayout from "@/Layouts/DashboardLayout";
+import { Head } from "@inertiajs/react";
 
 export default function Dashboard(props) {
     return (

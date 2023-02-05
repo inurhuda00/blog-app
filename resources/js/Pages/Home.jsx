@@ -3,7 +3,7 @@ import { Container } from "@/Components/Container";
 import PrimaryButton from "@/Components/PrimaryButton";
 import Section from "@/Components/Section";
 import AppLayout from "@/Layouts/AppLayout";
-import { Head, Link } from "@inertiajs/inertia-react";
+import { Head, Link } from "@inertiajs/react";
 
 export default function Home({ articles }) {
     return (

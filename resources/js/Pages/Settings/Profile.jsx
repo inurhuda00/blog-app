@@ -6,8 +6,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import Textarea from "@/Components/Textarea";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Dialog, Transition } from "@headlessui/react";
-import { Inertia } from "@inertiajs/inertia";
-import { useForm } from "@inertiajs/inertia-react";
+import { useForm } from "@inertiajs/react";
 import { Fragment, useRef, useState } from "react";
 import { socials } from "../Users/Show";
 

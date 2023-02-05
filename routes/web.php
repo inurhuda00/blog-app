@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EditorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\SettingsController;
@@ -27,9 +28,6 @@ require __DIR__ . '/auth.php';
 // auth()->loginUsingId(2);
 
 Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('editor', function () {
-    return inertia("Editor");
-});
 
 Route::get('/', HomeController::class)->name('home');
 
@@ -46,12 +44,18 @@ Route::middleware('auth')->group(function () {
 
     Route::post('links', [LinkController::class, 'store'])->name('links.store');
     Route::delete('links/{link}', [LinkController::class, 'destroy'])->name('links.destroy');
+
+    Route::controller(EditorController::class)->group(function () {
+        Route::get('editor/{article?}', 'editor');
+    });
 });
 
 Route::controller(ArticleController::class)->group(function () {
     Route::get('articles', 'index')->name('articles.index');
     Route::post('articles', 'store')->name('articles.store');
+
     Route::get('articles/create', 'create')->name('articles.create');
+
     Route::get('article/{article}/edit', 'edit')->name('articles.edit');
     Route::put('article/{article}', 'update')->name('articles.update');
     Route::delete('article/{article}', 'destroy')->name('articles.destroy');

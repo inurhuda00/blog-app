@@ -1,13 +1,12 @@
 import { Container } from "@/Components/Container";
-import PrimaryButton from "@/Components/PrimaryButton";
-import { useForm, usePage } from "@inertiajs/inertia-react";
-import DashboardLayout from "@/Layouts/DashboardLayout";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
-import InputLabel from "@/Components/InputLabel";
 import Input from "@/Components/Input";
 import InputError from "@/Components/InputError";
-import { Inertia } from "@inertiajs/inertia";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import DashboardLayout from "@/Layouts/DashboardLayout";
+import { Dialog, Transition } from "@headlessui/react";
+import { useForm, usePage } from "@inertiajs/react";
+import { Fragment, useEffect, useState } from "react";
 
 const PasswordForm = ({ closeModal }) => {
     const { user, token, errors } = usePage().props;

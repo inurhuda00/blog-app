@@ -1,11 +1,8 @@
 import { Container } from "@/Components/Container";
-import Input from "@/Components/Input";
-import Pagination from "@/Components/Pagination";
 import Table from "@/Components/Table";
 import useSwal from "@/Hooks/useSwal";
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import { Inertia } from "@inertiajs/inertia";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import clsx from "clsx";
 import { debounce, pickBy } from "lodash";
 import { useCallback, useEffect, useState } from "react";

@@ -3,7 +3,7 @@ import { Container } from "@/Components/Container";
 import Header from "@/Components/Header";
 import Pagination from "@/Components/Pagination";
 import AppLayout from "@/Layouts/AppLayout";
-import { Head } from "@inertiajs/inertia-react";
+import { Head } from "@inertiajs/react";
 
 export default function Show({ tag, ...props }) {
     const { data: articles, meta, links } = props.articles;

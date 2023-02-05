@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { Link } from "@inertiajs/inertia-react";
+import { Link } from "@inertiajs/react";
 import React, { Fragment, useContext, useState } from "react";
 
 const DropDownContext = React.createContext();

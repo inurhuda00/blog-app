@@ -1,5 +1,5 @@
 import { Menu, Transition } from "@headlessui/react";
-import { InertiaLink } from "@inertiajs/inertia-react";
+import { Link as InertiaLink } from "@inertiajs/react";
 import clsx from "clsx";
 import { Fragment } from "react";
 
