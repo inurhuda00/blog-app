@@ -22,7 +22,6 @@ class HomeController extends Controller
             ->with(['category' => fn ($query) => $query->select('id', 'slug', 'name')])
             ->limit(9)
             ->published()
-            ->latest()
             ->get();
 
         return inertia('Home', [

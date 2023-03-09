@@ -5,7 +5,7 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Dialog, Transition } from "@headlessui/react";
-import { useForm, usePage } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import { Fragment, useEffect, useState } from "react";
 
 const PasswordForm = ({ closeModal }) => {
@@ -31,7 +31,7 @@ const PasswordForm = ({ closeModal }) => {
     const submit = (e) => {
         e.preventDefault();
 
-        Inertia.post(
+        router.post(
             route("password.update"),
             { ...data },
             {
@@ -105,7 +105,7 @@ const EmailForm = ({ closeModal }) => {
 
     const submit = (e) => {
         e.preventDefault();
-        Inertia.post(
+        router.post(
             route("change.email"),
             { ...data },
             {

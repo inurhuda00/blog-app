@@ -58,7 +58,7 @@ const InlineBlock = ({
 const Title = ({ article, className, dark = false, As = "h3" }) => (
     <As
         className={clsx(
-            "text-lg font-semibold leading-8 tracking-tighter  md:text-xl xl:text-[1.375rem]",
+            "text-lg font-semibold capitalize leading-8  tracking-tighter md:text-xl xl:text-[1.375rem]",
             dark ? "text-gray-100" : "text-gray-800",
             className
         )}
@@ -113,7 +113,7 @@ const CardFeature = ({ articles, count = 1, index = 0 }) => {
                             article: article.slug,
                         })}
                     >
-                        <h2 className="mb-4 text-3xl font-bold leading-9 tracking-wide text-gray-100">
+                        <h2 className="mb-4 text-3xl font-bold capitalize leading-9 tracking-wide text-gray-100">
                             {article.title}
                         </h2>
                     </Link>
@@ -390,7 +390,7 @@ const ListArchive = ({ articles, count = 4, index = 0 }) => {
                             article: article.slug,
                         })}
                     >
-                        <h3 className="mb-2 font-medium leading-tight text-gray-800">
+                        <h3 className="mb-2 font-medium capitalize leading-tight text-gray-800">
                             {article.title}
                         </h3>
                     </Link>

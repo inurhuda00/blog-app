@@ -2,7 +2,7 @@ import { Container } from "@/Components/Container";
 import Table from "@/Components/Table";
 import useSwal from "@/Hooks/useSwal";
 import DashboardLayout from "@/Layouts/DashboardLayout";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import clsx from "clsx";
 import { debounce, pickBy } from "lodash";
 import { useCallback, useEffect, useState } from "react";
@@ -17,7 +17,7 @@ export default function ArticleTable(props) {
 
     const reload = useCallback(
         debounce((query) => {
-            Inertia.get(
+            router.get(
                 route("articles.table"),
 
                 pickBy({ ...query, page: query.q ? 1 : query.page }),

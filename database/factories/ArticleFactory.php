@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Tiptap\Editor;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Article>
@@ -24,10 +25,31 @@ class ArticleFactory extends Factory
             'slug' => str($title)->slug,
             'excerpt' => $this->faker->sentence(),
             'picture' => 'images/articles/' . rand(1, 10) . '.jpg',
-            'body' => $this->faker->sentence(),
+            'body' => (new Editor())->sanitize('{
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "Example "
+                            },
+                            {
+                                "type": "text",
+                                "marks": [
+                                    {
+                                        "type": "bold"
+                                    }
+                                ],
+                                "text": "Text"
+                            }
+                        ]
+                    }
+                ]
+            }'),
             'status' => $status = rand(0, 3),
             'published_at' => $status === 2 ? now() : null
-
         ];
     }
 }

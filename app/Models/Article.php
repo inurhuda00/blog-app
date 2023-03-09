@@ -23,6 +23,14 @@ class Article extends Model
         'published_at' => 'datetime'
     ];
 
+    protected function body(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => json_decode($value, true),
+            set: fn ($value) => json_encode($value),
+        );
+    }
+
 
     public function getRouteKeyName()
     {
@@ -49,9 +57,14 @@ class Article extends Model
         return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'username', 'avatar');
     }
 
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'editor_id')->select('id', 'name', 'username', 'avatar');
+    }
+
     public function scopePublished($query)
     {
-        return $query->where('status', ArticleStatus::PUBLISHED)->whereNotNull('published_at');
+        return $query->where('status', ArticleStatus::PUBLISHED)->whereNotNull('published_at')->whereDate('published_at', '<=', Carbon::now());
     }
 
     public function scopeNext($query)

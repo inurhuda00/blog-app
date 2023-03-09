@@ -19,19 +19,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-
-        User::factory()->hasArticles(150)->create([
-            'name' => 'Ilham Nuruddin Al Huda',
-            'email' => 'inurhuda00@gmail.com',
-            'username' => 'inurhuda00',
-        ]);
-
-
         $this->call([
             PermissionSeeder::class,
             CategorySeeder::class,
             TagSeeder::class,
             ArticleSeeder::class
         ]);
+
+        $user = User::factory()->hasArticles(150)->create([
+            'name' => 'Ilham Nuruddin Al Huda',
+            'email' => 'inurhuda00@gmail.com',
+            'username' => 'inurhuda00',
+        ]);
+
+        $user->assignRole('editor');
     }
 }

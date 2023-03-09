@@ -3,7 +3,7 @@ import { Container } from "@/Components/Container";
 import Header from "@/Components/Header";
 import PrimaryButton from "@/Components/PrimaryButton";
 import AppLayout from "@/Layouts/AppLayout";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, router, useForm } from "@inertiajs/react";
 
 export default function Edit({ article, statuses }) {
     const { data, setData } = useForm({
@@ -19,7 +19,7 @@ export default function Edit({ article, statuses }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        Inertia.post(
+        router.post(
             route("articles.update", article.slug),
             {
                 ...data,

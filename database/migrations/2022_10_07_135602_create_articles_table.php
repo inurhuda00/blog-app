@@ -21,7 +21,8 @@ return new class extends Migration
             $table->integer('status')->default(\App\Enums\ArticleStatus::DRAFT->value);
             $table->text('excerpt');
             $table->text('body');
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('editor_id')->nullable()->constrained()->references('id')->on('users');
             $table->foreignId('category_id');
             $table->dateTime('published_at')->nullable();
             $table->timestamps();

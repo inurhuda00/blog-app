@@ -170,13 +170,14 @@ class ArticleController extends Controller
         $currentArticle = $article->load([
             'tags' => fn ($query) => $query->select('name', 'slug'),
             'category' => fn ($query) => $query->select('id', 'name', 'slug'),
-            'author' => fn ($query) => $query->select('id', 'name', 'username', 'avatar')
-
+            'author' => fn ($query) => $query->select('id', 'name', 'username', 'avatar'),
+            'editor' => fn ($query) => $query->select('id', 'name', 'username', 'avatar'),
         ]);
 
         $articles = Article::query()
             ->select('title', 'slug', 'user_id', 'category_id', 'published_at')
             ->with([
+
                 'author' => fn ($query) => $query->select('id', 'name', 'username', 'avatar'),
                 'category' => fn ($query) => $query->select('id', 'name', 'slug'),
             ])
@@ -188,11 +189,11 @@ class ArticleController extends Controller
 
         return inertia('Articles/Show', [
             'can' => [
-                'update_article' => $request->user() ? $request->user()->can('update', $article) : false
+                "editAnyArticles" => $request->user() ? $request->user()->can("edit any articles", $article) : false
             ],
             'article' => (new ArticleSingleResource($currentArticle))->additional([
                 'related' => ArticleItemResource::collection($articles),
-            ])
+            ]),
         ]);
     }
 

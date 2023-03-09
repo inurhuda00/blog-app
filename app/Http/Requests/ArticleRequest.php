@@ -27,10 +27,9 @@ class ArticleRequest extends FormRequest
             'picture' => ['nullable', 'mimes:png,jpg,jpeg,webp', 'image'],
             'title' => ['required', 'string', 'min:3'],
             'excerpt' => ['required', 'string', 'min:3'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'body' => ['required', 'string', 'min:3'],
-            'tags' => ['required', 'array'],
-            'status' => ['required', 'numeric']
+            'category_id' => ['nullable', 'exists:categories,id'],
+            'body' => ['required'],
+            'tags' => ['nullable', 'array'],
         ];
     }
 }

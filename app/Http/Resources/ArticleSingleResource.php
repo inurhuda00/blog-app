@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
+use Tiptap\Editor;
 
 class ArticleSingleResource extends JsonResource
 {
@@ -24,12 +25,28 @@ class ArticleSingleResource extends JsonResource
             ])
         ] : [];
 
+        $editor = (new Editor())->setContent($this->body);
+        $body = $editor->descendants(function (&$node) {
+            if ($node->type !== 'heading') {
+                return;
+            }
+
+            if ($node->attrs->level == 1) {
+                array_shift($node->content);
+            }
+        });
+        $editor = $this->editor ? ['editor' => [
+            'name' => $this->editor->name,
+            'username' => $this->editor->username,
+            'avatar' => $this->editor->avatar_url,
+        ]] : [];
+
         return [
             'id' => $this->id,
             'slug' => $this->slug,
             'title' => $this->title,
             'excerpt' => $this->excerpt,
-            'body' => $this->body,
+            'body' => $body->getHTML(),
             'status' => $this->status,
             'author' => [
                 'name' => $this->author->name,
@@ -38,6 +55,7 @@ class ArticleSingleResource extends JsonResource
                 ...$profile
 
             ],
+            ...$editor,
             'picture' => $this->picture ? env('APP_URL') . Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/image.jpg',
             'time' => [
                 'datetime' => $this->published_at ?? $this->created_at,

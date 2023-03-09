@@ -12,7 +12,7 @@ export default function Select({
     return (
         <Listbox
             as="div"
-            className="relative rounded-xl"
+            className="relative z-50 rounded-xl"
             value={value}
             onChange={(e) => {
                 onChange(e);
@@ -22,7 +22,7 @@ export default function Select({
         >
             <Listbox.Button className="flex h-11 w-full items-center justify-between gap-x-2 rounded-lg border px-3 focus:outline-none">
                 <span className="capitalize line-clamp-1">
-                    {value.name || placeholder}
+                    {value?.name || placeholder}
                 </span>
                 <div onClick={() => setIsOpen(!isOpen)}>
                     <svg

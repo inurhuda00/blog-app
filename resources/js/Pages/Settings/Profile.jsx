@@ -6,7 +6,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import Textarea from "@/Components/Textarea";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Dialog, Transition } from "@headlessui/react";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { Fragment, useRef, useState } from "react";
 import { socials } from "../Users/Show";
 
@@ -22,7 +22,7 @@ export default function Profile({ user, linkTypes, errors }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        Inertia.post(
+        router.post(
             route("profile.update"),
             {
                 ...data,
@@ -59,7 +59,7 @@ export default function Profile({ user, linkTypes, errors }) {
         return photoInput.current.click();
     };
     const deletePhoto = () => {
-        Inertia.delete(route("current-user-photo.destroy"), {
+        router.delete(route("current-user-photo.destroy"), {
             preserveScroll: true,
             onSuccess: () => {
                 clearPhotoFileInput();
@@ -90,7 +90,7 @@ export default function Profile({ user, linkTypes, errors }) {
     } = useForm({ url: "", name: "" });
 
     const handleAddLink = () => {
-        Inertia.post(
+        router.post(
             route("links.store"),
             { ...formLink },
             {
@@ -104,7 +104,7 @@ export default function Profile({ user, linkTypes, errors }) {
     };
 
     const handleRemoveLink = (link) => {
-        Inertia.delete(route("links.destroy", link), {
+        router.delete(route("links.destroy", link), {
             preserveScroll: true,
         });
     };

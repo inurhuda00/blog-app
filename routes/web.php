@@ -27,14 +27,14 @@ require __DIR__ . '/auth.php';
 
 // auth()->loginUsingId(2);
 
-Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified', 'hasRole'])->name('dashboard');
 
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('category/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'hasRole'])->group(function () {
     Route::get('settings/account', [SettingsController::class, 'account'])->name('settings.account');
     Route::post('settings/account', [SettingsController::class, 'updateAccount'])->name('settings.account.update');
 
@@ -46,7 +46,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('links/{link}', [LinkController::class, 'destroy'])->name('links.destroy');
 
     Route::controller(EditorController::class)->group(function () {
-        Route::get('editor/{article?}', 'editor');
+        Route::get('editor/{article?}', 'editor')->name('editor');
+        Route::post('editor', 'store')->name('editor.store'); // draf 
+        Route::post('editor/review', 'review')->name('editor.review'); // review 
+        Route::post('editor/reject/{article:slug}', 'reject')->name('editor.reject'); // reject
+        Route::post('editor/publish/{article:slug}', 'publish')->name('editor.publish'); // publish
+        Route::post('editor/edit/{article:slug}', 'edit')->name('editor.edit'); // publish & edit
     });
 });
 

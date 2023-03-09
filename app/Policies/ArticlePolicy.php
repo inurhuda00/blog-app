@@ -37,11 +37,11 @@ class ArticlePolicy
 
         // visitors cannot view unpublished items
         if ($user === null) {
-            return $this->deny();
+            return $this->denyAsNotFound();
         }
 
         // admin overrides published status
-        if ($user->can('view unpublished article')) {
+        if ($user->can('view any article')) {
             return $this->allow();
         }
 
@@ -57,7 +57,7 @@ class ArticlePolicy
      */
     public function create(User $user)
     {
-        if ($user->can('create articles')) {
+        if ($user->can('create or delete articles')) {
             return $this->allow();;
         }
 
@@ -74,15 +74,21 @@ class ArticlePolicy
     public function update(?User $user, Article $article)
     {
 
+
+        if ($user->can('manage articles')) {
+            return $this->allow();
+        }
+
+        if ($user->can('edit any articles')) {
+            return $this->allow();
+        }
+
         if ($user->can('edit own articles')) {
             return $article->author()->is($user)
                 ? $this->allow()
                 : $this->denyAsNotFound();
         }
 
-        if ($user->can('edit all articles')) {
-            return $this->allow();
-        }
 
         return $this->deny();
     }
@@ -96,11 +102,11 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article)
     {
-        if ($user->can('delete own articles')) {
+        if ($user->can('create or delete articles')) {
             return $this->update($user, $article);
         }
 
-        if ($user->can('delete any article')) {
+        if ($user->can('manage articles')) {
             return true;
         }
         return $this->deny();
