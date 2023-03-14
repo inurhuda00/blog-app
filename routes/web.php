@@ -57,12 +57,6 @@ Route::middleware(['auth', 'hasRole'])->group(function () {
 
 Route::controller(ArticleController::class)->group(function () {
     Route::get('articles', 'index')->name('articles.index');
-    Route::post('articles', 'store')->name('articles.store');
-
-    Route::get('articles/create', 'create')->name('articles.create');
-
-    Route::get('article/{article}/edit', 'edit')->name('articles.edit');
-    Route::put('article/{article}', 'update')->name('articles.update');
     Route::delete('article/{article}', 'destroy')->name('articles.destroy');
     Route::get('articles/table', 'table')->name('articles.table');
 

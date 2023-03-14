@@ -25,7 +25,7 @@ class ArticleController extends Controller
     {
         $this->authorizeResource(Article::class, 'article');
         $this->middleware('auth')->except('show', 'index');
-        $this->middleware('hasRole')->only('table', 'create');
+        $this->middleware('hasRole')->only('table');
 
         $this->tags = Tag::select('id', 'name')->get();
         $this->categories = Category::select('id', 'name')->get();
@@ -114,52 +114,6 @@ class ArticleController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return inertia('Articles/Create', [
-            'tags' => $this->tags,
-            'categories' => $this->categories,
-            'statuses' => $this->statuses
-        ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(ArticleRequest $request)
-    {
-
-        $picture = $request->file('picture');
-
-        $article = $request->user()->articles()->create([
-            'title' => $title = $request->title,
-            'slug' => $slug =  str($title)->slug(),
-            'excerpt' => $request->excerpt,
-            'category_id' => $request->category_id,
-            'status' => $request->status,
-            'body' => $request->body,
-            'picture' => $request->hasFile('picture')
-                ? $picture->storeAs('images/articles', $slug . '.' . $picture->extension(), 'public')
-                : null
-
-        ]);
-
-        $article->tags()->attach($request->tags);
-
-        return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
-            'type' => 'success',
-            'message' => 'article created'
-        ]);
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Article  $article
@@ -194,61 +148,6 @@ class ArticleController extends Controller
             'article' => (new ArticleSingleResource($currentArticle))->additional([
                 'related' => ArticleItemResource::collection($articles),
             ]),
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Article $article)
-    {
-        $article = $article->load([
-            'category'
-        ]);
-
-        return inertia('Articles/Edit', [
-            'article' => new ArticleSingleResource($article),
-            'tags' => $this->tags,
-            'categories' => $this->categories,
-            'statuses' => $this->statuses
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
-     */
-    public function update(ArticleRequest $request, Article $article)
-    {
-
-        $picture = $request->file('picture');
-
-
-        $article->update([
-            'title' => $title = $request->title,
-            'slug' => $slug =  str($title)->slug(),
-            'excerpt' => $request->excerpt,
-            'category_id' => $request->category_id,
-            'status' => $status = intval($request->status),
-            'published_at' => $status == ArticleStatus::PUBLISHED->value ? now() : null,
-            'body' => $request->body,
-            'picture' => $request->hasFile('picture')
-                ? $picture->storeAs('images/articles', $slug . '.' . $picture->extension(), 'public')
-                : $article->picture
-
-        ]);
-
-        $article->tags()->sync($request->tags, true);
-
-        return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
-            'type' => 'success',
-            'message' => 'article updated'
         ]);
     }
 

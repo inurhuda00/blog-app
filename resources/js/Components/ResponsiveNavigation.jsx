@@ -67,7 +67,7 @@ export default function ResponsiveNavigation() {
                                 <>
                                     <DropdownMenu.Link
                                         hr
-                                        href={route("articles.create")}
+                                        href={route("editor")}
                                     >
                                         New article
                                     </DropdownMenu.Link>

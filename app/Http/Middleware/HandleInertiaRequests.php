@@ -43,17 +43,18 @@ class HandleInertiaRequests extends Middleware
             ->select('name', 'slug')
             ->get();
 
+        $user = !is_null($request->user()) ? [
+            'user' =>
+            [
+                ...$request->user()->only(['id', 'name', 'username', 'email']),
+                'hasRole' => $request->user()->hasAnyRole(Role::all()),
+                'avatar' => $request->user()->avatar_url
+            ]
+        ] : [];
+
 
         return array_merge(parent::share($request), [
-            'auth' => [
-                'user' => !is_null($request->user()) ?
-                    [
-                        ...$request->user()->only(['id', 'name', 'username', 'email']),
-                        'hasRole' => $request->user()->hasAnyRole(Role::all()),
-                        'avatar' => $request->user()->avatar_url
-                    ]
-                    : null,
-            ],
+            'auth' => [...$user],
             'flash' => [
                 'type' => $request->session()->get('type'),
                 'message' => $request->session()->get('message'),

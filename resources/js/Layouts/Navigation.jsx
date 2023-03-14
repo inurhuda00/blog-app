@@ -72,9 +72,7 @@ export default function Navbar() {
                                             {auth.user.hasRole ? (
                                                 <>
                                                     <DropdownMenu.Link
-                                                        href={route(
-                                                            "articles.create"
-                                                        )}
+                                                        href={route("editor")}
                                                     >
                                                         New article
                                                     </DropdownMenu.Link>

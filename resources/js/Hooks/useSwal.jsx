@@ -1,3 +1,4 @@
+import { router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 import swal from "sweetalert";
 
@@ -14,7 +15,7 @@ export default function useSwal() {
             buttons: ["Nope", "Yap"],
         }).then((value) => {
             if (value == true) {
-                Inertia[method](url, data, {
+                router[method](url, data, {
                     preserveScroll: true,
                     onSuccess: () => toast.success("Done."),
                 });

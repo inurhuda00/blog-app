@@ -182,10 +182,7 @@ export default function ArticleTable(props) {
                                             View
                                         </Table.DropdownItem>
                                         <Table.DropdownItem
-                                            href={route(
-                                                "articles.edit",
-                                                article.slug
-                                            )}
+                                            href={route("editor", article.slug)}
                                         >
                                             Edit
                                         </Table.DropdownItem>

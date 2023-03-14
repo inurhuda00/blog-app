@@ -395,7 +395,7 @@ const ActionsButton = ({
         auth,
         article,
         can: { createArticles, acceptOrRejectArticle, editAnyArticles },
-        is: { draft, review, published, rejected },
+        is: { draft, review, published },
     } = usePage().props;
 
     const handleDraftArticle = (e) => {
@@ -424,7 +424,7 @@ const ActionsButton = ({
         () =>
             acceptOrRejectArticle &&
             article.author.username !== auth.user.username &&
-            !published,
+            (!published || data?.status !== 2),
         [data.status, published]
     );
 
@@ -537,7 +537,10 @@ const ActionsButton = ({
                     </button>
                 </>
             ) : null}
-            {!article.author || draft ? (
+
+            {article.author &&
+            article.author.username === auth.user.username &&
+            draft ? (
                 <>
                     <button
                         disabled={!createAndDraft || processing}

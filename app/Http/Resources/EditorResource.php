@@ -17,7 +17,12 @@ class EditorResource extends JsonResource
     public function toArray($request)
     {
 
-        $status = $request->user()->canany(['edit any articles', 'manage articles']) ? ['status' => $this->status->value] : [];
+        if ($this->exists) {
+            $status =
+                $request->user()->canany(['edit any articles', 'manage articles'])
+                ? ['status' => $this->status->value]
+                : [];
+        }
 
         return $this->exists ? [
             'id' => $this->id,
