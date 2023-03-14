@@ -13,6 +13,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^2.8",
         "laravel/tinker": "^2.7",
+        "spatie/image": "^2.2",
         "spatie/laravel-permission": "^5.5",
         "tightenco/ziggy": "^1.0",
         "ueberdosis/tiptap-php": "^1.1"

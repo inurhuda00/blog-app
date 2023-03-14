@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Enums\ArticleStatus;
 use App\Models\Article;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ArticlePolicy
@@ -31,7 +32,7 @@ class ArticlePolicy
      */
     public function view(?User $user, Article $article)
     {
-        if ($article->status === ArticleStatus::PUBLISHED) {
+        if ($article->status === ArticleStatus::PUBLISHED && $article->published_at <= Carbon::now()) {
             return $this->allow();
         }
 
@@ -74,12 +75,14 @@ class ArticlePolicy
     public function update(?User $user, Article $article)
     {
 
-
         if ($user->can('manage articles')) {
             return $this->allow();
         }
 
-        if ($user->can('edit any articles')) {
+        if (
+            ($user->can('edit any articles') || $user->can('accept or reject articles'))
+            && !ArticleStatus::DRAFT->equals($article->status)
+        ) {
             return $this->allow();
         }
 

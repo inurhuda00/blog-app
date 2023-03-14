@@ -66,7 +66,12 @@ class PermissionSeeder extends Seeder
                     ...$commentPermission
                 ],
                 'editor' => [
-                    ...$articlePermission
+                    'view article',
+                    'view any article',
+                    'create or delete articles',
+                    'edit own articles',
+                    'edit any articles',
+                    'accept or reject articles',
                 ],
                 'writer' => [
                     'view article',

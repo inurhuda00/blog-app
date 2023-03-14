@@ -6,10 +6,8 @@ namespace App\Providers;
 
 use App\Policies\ArticlePolicy;
 use App\Models\Article;
-use App\Policies\EditorPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use Tiptap\Editor;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,8 +19,6 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Article::class => ArticlePolicy::class,
-        Editor::class => ArticlePolicy::class,
-
     ];
 
     /**

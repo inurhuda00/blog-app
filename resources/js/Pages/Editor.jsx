@@ -8,8 +8,10 @@ import { Link as TiptapLink } from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import Typography from "@tiptap/extension-typography";
 import { EditorContent, isString, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { useCallback, useState } from "react";
+import { StarterKit } from "@tiptap/starter-kit";
+import { useEffect, useMemo, useState } from "react";
+import { toast, Toaster } from "react-hot-toast";
+import Datepicker from "react-tailwindcss-datepicker";
 
 function isObject(value) {
     var type = typeof value;
@@ -118,7 +120,32 @@ It’ll always have a heading …
 
 `;
 
-export default function Editor({ auth, article, errors }) {
+const getMessage = (status) => {
+    let message;
+
+    switch (status) {
+        case "review":
+            message =
+                "Karya Anda saat ini sedang direview oleh tim kami. Mohon bersabar dan tunggu informasi selanjutnya dari kami.";
+            break;
+        case "published":
+            message =
+                "Selamat, artikel Anda berhasil dipublikasikan! Terima kasih telah berbagi ide-ide Anda dengan kami.";
+            break;
+        case "rejected":
+            message =
+                "Maaf, artikel Anda belum bisa dipublikasikan. Tolong perbaiki beberapa bagian sesuai saran editor dan kirim kembali. Terima kasih!";
+            break;
+        default:
+            message =
+                "Tolong lengkapi informasi judul, ringkasan, gambar utama, kategori, dan konten artikel sebelum mengirim untuk ditinjau. Terima kasih!";
+            break;
+    }
+
+    return message;
+};
+
+export default function Editor({ auth, article, status, errors }) {
     const { data, setData, processing, post } = useForm({
         title: article.title,
         excerpt: article.excerpt,
@@ -127,10 +154,21 @@ export default function Editor({ auth, article, errors }) {
         picture: article.picture ? article.picture : null,
         tags: article.tags || [],
         status: article.status || 0,
+        published_at: article.published_at
+            ? {
+                  startDate: article.published_at,
+                  endDate: article.published_at,
+              }
+            : null,
     });
 
-    const handleChange = (e) =>
-        useCallback(setData(e.target.name, e.target.value));
+    useEffect(() => {
+        Object.keys(errors).length !== 0 &&
+            Object.values(errors).map((error) => toast.error(error));
+    }, [errors]);
+
+    const isSaved = false;
+    const handleChange = (e) => setData(e.target.name, e.target.value);
     // Debounce callback
     const debounced =
         // function
@@ -198,7 +236,10 @@ export default function Editor({ auth, article, errors }) {
         <EditorWrapper className="absolute inset-0">
             <header className="flex items-center border-b bg-white">
                 <div className="flex flex-grow-0">
-                    <div className="flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center bg-black text-white">
+                    <Link
+                        href="/"
+                        className="flex h-[3.75rem] w-[3.75rem] shrink-0 items-center justify-center bg-black text-white"
+                    >
                         {/* logo */}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -208,13 +249,14 @@ export default function Editor({ auth, article, errors }) {
                         >
                             <path d="M18.266 26.068l7.839-7.854 4.469 4.479c1.859 1.859 1.859 4.875 0 6.734l-1.104 1.104c-1.859 1.865-4.875 1.865-6.734 0zM30.563 2.531l-1.109-1.104c-1.859-1.859-4.875-1.859-6.734 0l-6.719 6.734-6.734-6.734c-1.859-1.859-4.875-1.859-6.734 0l-1.104 1.104c-1.859 1.859-1.859 4.875 0 6.734l6.734 6.734-6.734 6.734c-1.859 1.859-1.859 4.875 0 6.734l1.104 1.104c1.859 1.859 4.875 1.859 6.734 0l21.307-21.307c1.859-1.859 1.859-4.875 0-6.734z" />
                         </svg>
-                    </div>
+                    </Link>
                 </div>
                 <TopBar editor={editor} />
                 <ActionsButton
                     editor={editor}
                     data={data}
                     post={post}
+                    setData={setData}
                     processing={processing}
                     settingsOpen={settingsOpen}
                     setSettingsOpen={setSettingsOpen}
@@ -222,11 +264,7 @@ export default function Editor({ auth, article, errors }) {
             </header>
             <div className="flex items-center justify-center gap-x-6 bg-gray-900 py-2.5 px-6 sm:px-3.5">
                 <p className="text-sm leading-6 text-white">
-                    Submit for review will become available after you add a{" "}
-                    <strong className="font-semibold">
-                        title, excerpt, plus a featured image, category, and
-                        content.
-                    </strong>
+                    {getMessage(status)}
                 </p>
             </div>
 
@@ -348,6 +386,7 @@ export default function Editor({ auth, article, errors }) {
 const ActionsButton = ({
     data,
     post,
+    setData,
     processing,
     settingsOpen,
     setSettingsOpen,
@@ -356,6 +395,7 @@ const ActionsButton = ({
         auth,
         article,
         can: { createArticles, acceptOrRejectArticle, editAnyArticles },
+        is: { draft, review, published, rejected },
     } = usePage().props;
 
     const handleDraftArticle = (e) => {
@@ -380,30 +420,40 @@ const ActionsButton = ({
         post(route("editor.edit", article.slug), {});
     };
 
-    const acceptAndBelongToOther =
-        acceptOrRejectArticle &&
-        article.author.username !== auth.user.username &&
-        data.status !== 2;
+    const acceptAndBelongToOther = useMemo(
+        () =>
+            acceptOrRejectArticle &&
+            article.author.username !== auth.user.username &&
+            !published,
+        [data.status, published]
+    );
 
-    const createAndDraft =
-        createArticles &&
-        isString(data.title) &&
-        isString(data.excerpt) &&
-        (isObject(data.body) || isString(data.body)) &&
-        data.category_id;
+    const createAndDraft = useMemo(
+        () =>
+            createArticles &&
+            isString(data.title) &&
+            isString(data.excerpt) &&
+            (isObject(data.body) || isString(data.body)) &&
+            data.category_id,
 
-    const requiredField =
-        isObject(data.picture) &&
-        !!data.tags.length &&
-        isString(data.title) &&
-        isString(data.excerpt) &&
-        (isObject(data.body) || isString(data.body)) &&
-        data.category_id;
+        [data.title, data.excerpt, data.body, data.category_id]
+    );
+
+    const requiredField = useMemo(
+        () =>
+            isObject(data.picture) &&
+            !!data.tags.length &&
+            isString(data.title) &&
+            isString(data.excerpt) &&
+            (isObject(data.body) || isString(data.body)) &&
+            data.category_id,
+        [data]
+    );
 
     const createReview = createArticles && requiredField;
 
     return (
-        <div className="flex items-center justify-end gap-x-4 pr-4">
+        <div className="relative flex items-center justify-end gap-x-4 pr-4">
             {article.author ? (
                 <Link
                     href={route("articles.show", {
@@ -411,6 +461,7 @@ const ActionsButton = ({
                         article: article.slug,
                     })}
                     className="initial-flex items-center justify-center border border-black px-3 py-1 text-xs"
+                    title="petinjauan"
                 >
                     {/* petinjauan */}
                     <svg
@@ -427,7 +478,7 @@ const ActionsButton = ({
             ) : null}
             {article.author ? (
                 <>
-                    {editAnyArticles ? (
+                    {editAnyArticles && !review && !draft ? (
                         <button
                             disabled={
                                 !(editAnyArticles && requiredField) ||
@@ -438,6 +489,7 @@ const ActionsButton = ({
                                     ? handleEditArticle
                                     : null
                             }
+                            title="edit artikel"
                             className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
                         >
                             Edit
@@ -452,27 +504,46 @@ const ActionsButton = ({
                         onClick={
                             acceptAndBelongToOther ? handleRejectArticle : null
                         }
+                        title="tolak artikel"
                         className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
                     >
                         Tolak
                     </button>
+                    <Datepicker
+                        inputClassName="w-48"
+                        useRange={false}
+                        asSingle={true}
+                        value={data.published_at}
+                        onChange={(value) =>
+                            setData((data) => ({
+                                ...data,
+                                published_at: value,
+                            }))
+                        }
+                    />
                     <button
-                        disabled={!acceptAndBelongToOther || processing}
+                        disabled={
+                            !acceptAndBelongToOther ||
+                            processing ||
+                            !data.published_at
+                        }
                         onClick={
                             acceptAndBelongToOther ? handlePublishArticle : null
                         }
+                        title="publish artikel"
                         className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
                     >
                         Terbitkan
                     </button>
                 </>
             ) : null}
-            {!article.author ? (
+            {!article.author || draft ? (
                 <>
                     <button
                         disabled={!createAndDraft || processing}
                         onClick={createAndDraft ? handleDraftArticle : null}
                         className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
+                        title="simpan ke draft"
                     >
                         Draft
                     </button>
@@ -481,12 +552,15 @@ const ActionsButton = ({
                         disabled={!createReview || processing}
                         onClick={createReview ? handleSubmitArticle : null}
                         className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
+                        title="kirimkan artikel"
                     >
                         Kirim Tulisan
                     </button>
                 </>
             ) : null}
+
             <button
+                title="buka pengaturean editor"
                 onClick={() => setSettingsOpen(!settingsOpen)}
                 className="flex items-center justify-center bg-gray-900 p-2 text-white"
             >
@@ -508,12 +582,15 @@ const ActionsButton = ({
 
 const EditorWrapper = (props) => {
     return (
-        <section {...props}>
-            <div className="fixed inset-0 flex h-auto max-h-full w-full">
-                <div className="flex w-full shrink grow-0 basis-full flex-col">
-                    {props.children}
+        <>
+            <Toaster />
+            <section {...props}>
+                <div className="fixed inset-0 flex h-auto max-h-full w-full">
+                    <div className="flex w-full shrink grow-0 basis-full flex-col">
+                        {props.children}
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </>
     );
 };

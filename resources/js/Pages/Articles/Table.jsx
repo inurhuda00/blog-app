@@ -4,8 +4,9 @@ import useSwal from "@/Hooks/useSwal";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { Link, router } from "@inertiajs/react";
 import clsx from "clsx";
-import { debounce, pickBy } from "lodash";
-import { useCallback, useEffect, useState } from "react";
+// import { debounce, pickBy } from "lodash";
+import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function ArticleTable(props) {
     const { data: articles, meta, filtered, attributes } = props.articles;
@@ -15,20 +16,17 @@ export default function ArticleTable(props) {
     const [params, setParams] = useState(filtered);
     const [pageNumber, setPageNumber] = useState([]);
 
-    const reload = useCallback(
-        debounce((query) => {
-            router.get(
-                route("articles.table"),
+    const reload = useDebouncedCallback((query) => {
+        router.get(
+            route("articles.table"),
 
-                pickBy({ ...query, page: query.q ? 1 : query.page }),
-                {
-                    preserveScroll: true,
-                    preserveState: true,
-                }
-            );
-        }, 150),
-        []
-    );
+            { ...query, page: query.q ? 1 : query.page },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            }
+        );
+    }, 1000);
 
     useEffect(() => reload(params), [params]);
     useEffect(() => {

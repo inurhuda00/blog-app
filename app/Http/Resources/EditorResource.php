@@ -17,13 +17,15 @@ class EditorResource extends JsonResource
     public function toArray($request)
     {
 
+        $status = $request->user()->canany(['edit any articles', 'manage articles']) ? ['status' => $this->status->value] : [];
+
         return $this->exists ? [
             'id' => $this->id,
             'slug' => $this->slug,
             'title' => $this->title,
             'excerpt' => $this->excerpt,
             'body' => (new Editor())->setContent($this->body)->getHTML(),
-            'status' => $this->status->value,
+            ...$status,
             'author' => [
                 'name' => $this->author->name,
                 'username' => $this->author->username,
@@ -31,9 +33,9 @@ class EditorResource extends JsonResource
 
             ],
             'picture' => $this->picture ? env('APP_URL') . Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/image.jpg',
-
             'category_id' => $this->category->id,
-            'tags' => collect($this->tags)->pluck('name')
+            'tags' => collect($this->tags)->pluck('name'),
+            'published_at' => $this->published_at
         ] : [];
     }
 }

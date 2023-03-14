@@ -32,11 +32,12 @@ const Settings = (props) => {
 };
 
 function Status(props) {
-    const { editor, data, limit } = useContext(settingsContext);
+    const { editor, data, limit, handleChange } = useContext(settingsContext);
     const {
         auth,
         article,
-        can: { createArticles, acceptOrRejectArticle },
+        can: { createArticles, manageArticles, editAnyArticles },
+        is,
         statuses,
     } = usePage().props;
 
@@ -107,13 +108,54 @@ function Status(props) {
                         </div>
                         <div className="flex h-10 w-full items-center justify-start p-4">
                             <span className="w-2/5">Visibility </span>
-                            <button>
-                                {
-                                    statuses.find(
-                                        (status) => status.id === data.status
-                                    ).name
-                                }
-                            </button>
+                            {manageArticles ? (
+                                <label className="flex h-10 w-full items-center justify-start p-4">
+                                    <select
+                                        className="mt-1 block w-full text-xs"
+                                        value={data.status || 0}
+                                        onChange={handleChange}
+                                        name="status"
+                                    >
+                                        {!data.status ? (
+                                            <option value={Number(0)}>
+                                                Draft
+                                            </option>
+                                        ) : null}
+                                        {statuses.map((status) => {
+                                            return (
+                                                <option
+                                                    key={status.id}
+                                                    value={Number(status.id)}
+                                                >
+                                                    {status.name}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </label>
+                            ) : (
+                                <>
+                                    {editAnyArticles ? (
+                                        <p>
+                                            {
+                                                statuses.find(
+                                                    (status) =>
+                                                        status.id ===
+                                                        data.status
+                                                ).name
+                                            }
+                                        </p>
+                                    ) : (
+                                        <>
+                                            {is.review ? (
+                                                <p>Review</p>
+                                            ) : (
+                                                <p>Draft</p>
+                                            )}
+                                        </>
+                                    )}
+                                </>
+                            )}
                         </div>
 
                         {createArticles
@@ -286,6 +328,7 @@ function Categories(props) {
                         <label className="flex h-10 w-full items-center justify-start p-4">
                             <select
                                 className="mt-1 block w-full text-xs"
+                                value={data.category_id}
                                 onChange={handleChange}
                                 name="category_id"
                             >
@@ -297,9 +340,6 @@ function Categories(props) {
                                         <option
                                             key={category.id}
                                             value={category.id}
-                                            defaultValue={
-                                                category.id === data.category_id
-                                            }
                                         >
                                             {category.name}
                                         </option>
