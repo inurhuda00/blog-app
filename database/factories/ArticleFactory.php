@@ -24,7 +24,7 @@ class ArticleFactory extends Factory
             'title' => $title = $this->faker->sentence(),
             'slug' => str($title)->slug,
             'excerpt' => $this->faker->sentence(),
-            'picture' => 'images/articles/' . rand(1, 10) . '.jpg',
+            'picture' => 'images/articles/' . rand(1, 10) . '.webp',
             'body' => (new Editor())->sanitize('{
                 "type": "doc",
                 "content": [

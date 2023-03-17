@@ -19,7 +19,7 @@ export default function Show({
             <Head title={article.title} />
             {(auth.user?.username === article.author.username ||
                 editAnyArticles) && (
-                <Link href={route("editor", article.slug)}>
+                <Link href={route("editor", article.uuid)}>
                     <PrimaryButton className="sticky top-0 w-full">
                         edit
                     </PrimaryButton>

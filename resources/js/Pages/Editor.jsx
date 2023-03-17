@@ -400,24 +400,24 @@ const ActionsButton = ({
 
     const handleDraftArticle = (e) => {
         e.preventDefault();
-        post(route("editor.store"), {});
+        post(route("editor.store", article.uuid), {});
     };
 
     const handleSubmitArticle = (e) => {
         e.preventDefault();
-        post(route("editor.review"), {});
+        post(route("editor.review", article.uuid), {});
     };
 
     const handleRejectArticle = (e) => {
-        post(route("editor.reject", article.slug), {});
+        post(route("editor.reject", article.uuid), {});
     };
 
     const handlePublishArticle = (e) => {
-        post(route("editor.publish", article.slug), {});
+        post(route("editor.publish", article.uuid), {});
     };
 
     const handleEditArticle = (e) => {
-        post(route("editor.edit", article.slug), {});
+        post(route("editor.edit", article.uuid), {});
     };
 
     const acceptAndBelongToOther = useMemo(
@@ -538,9 +538,8 @@ const ActionsButton = ({
                 </>
             ) : null}
 
-            {article.author &&
-            article.author.username === auth.user.username &&
-            draft ? (
+            {(!article?.author && draft) ||
+            (article?.author.username === auth.user.username && draft) ? (
                 <>
                     <button
                         disabled={!createAndDraft || processing}

@@ -27,6 +27,7 @@ class EditorResource extends JsonResource
         return $this->exists ? [
             'id' => $this->id,
             'slug' => $this->slug,
+            'uuid' => $this->uuid,
             'title' => $this->title,
             'excerpt' => $this->excerpt,
             'body' => (new Editor())->setContent($this->body)->getHTML(),
@@ -37,7 +38,7 @@ class EditorResource extends JsonResource
                 'avatar' => $this->author->avatar_url,
 
             ],
-            'picture' => $this->picture ? env('APP_URL') . Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/image.jpg',
+            'picture' => $this->picture ? env('APP_URL') . Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/1.webp',
             'category_id' => $this->category->id,
             'tags' => collect($this->tags)->pluck('name'),
             'published_at' => $this->published_at

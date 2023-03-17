@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Middleware;
 use Spatie\Permission\Models\Role;
 use Tightenco\Ziggy\Ziggy;
@@ -60,6 +61,7 @@ class HandleInertiaRequests extends Middleware
                 'message' => $request->session()->get('message'),
 
             ],
+            'uuid' => Str::uuid(),
             'categories_global' => cache()->rememberForever('categories_global', fn () => $categoriesGlobal),
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [

@@ -44,6 +44,7 @@ class ArticleSingleResource extends JsonResource
         return [
             'id' => $this->id,
             'slug' => $this->slug,
+            'uuid' => $this->uuid,
             'title' => $this->title,
             'excerpt' => $this->excerpt,
             'body' => $body->getHTML(),
@@ -56,7 +57,7 @@ class ArticleSingleResource extends JsonResource
 
             ],
             ...$editor,
-            'picture' => $this->picture ? env('APP_URL') . Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/image.jpg',
+            'picture' => $this->picture ? env('APP_URL') . Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/1.webp',
             'time' => [
                 'datetime' => $this->published_at ?? $this->created_at,
                 'published_at' => $this->published_at ?

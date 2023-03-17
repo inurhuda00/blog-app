@@ -46,12 +46,12 @@ Route::middleware(['auth', 'hasRole'])->group(function () {
     Route::delete('links/{link}', [LinkController::class, 'destroy'])->name('links.destroy');
 
     Route::controller(EditorController::class)->group(function () {
-        Route::get('editor/{article?}', 'editor')->name('editor');
-        Route::post('editor', 'store')->name('editor.store'); // draf 
-        Route::post('editor/review', 'review')->name('editor.review'); // review 
-        Route::post('editor/reject/{article:slug}', 'reject')->name('editor.reject'); // reject
-        Route::post('editor/publish/{article:slug}', 'publish')->name('editor.publish'); // publish
-        Route::post('editor/edit/{article:slug}', 'edit')->name('editor.edit'); // publish & edit
+        Route::get('editor/{uuid}', 'editor')->name('editor');
+        Route::post('editor/{article:uuid}', 'store')->name('editor.store'); // draf 
+        Route::post('editor/review/{article:uuid}', 'review')->name('editor.review'); // review 
+        Route::post('editor/reject/{article:uuid}', 'reject')->name('editor.reject'); // reject
+        Route::post('editor/publish/{article:uuid}', 'publish')->name('editor.publish'); // publish
+        Route::post('editor/edit/{article:uuid}', 'edit')->name('editor.edit'); // publish & edit
     });
 });
 

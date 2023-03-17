@@ -5,7 +5,7 @@ import ResponsiveNavigation from "@/Components/ResponsiveNavigation";
 import { usePage } from "@inertiajs/react";
 
 export default function Navbar() {
-    const { auth, categories_global } = usePage().props;
+    const { auth, categories_global, uuid } = usePage().props;
 
     return (
         <>
@@ -72,7 +72,10 @@ export default function Navbar() {
                                             {auth.user.hasRole ? (
                                                 <>
                                                     <DropdownMenu.Link
-                                                        href={route("editor")}
+                                                        href={route(
+                                                            "editor",
+                                                            uuid
+                                                        )}
                                                     >
                                                         New article
                                                     </DropdownMenu.Link>

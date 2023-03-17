@@ -44,7 +44,7 @@ class ArticleItemResource extends JsonResource
         return [
             'title' => $this->title,
             'slug' => $this->slug,
-            'picture' => $this->picture ? env('APP_URL') . Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/image.jpg',
+            'picture' => $this->picture ? env('APP_URL') . Storage::url($this->picture) : env('APP_URL') . '/storage/images/articles/1.webp',
             'time' => [
                 'datetime' => $this->published_at,
                 'published_at' => $this->published_at->format('M d , Y'),

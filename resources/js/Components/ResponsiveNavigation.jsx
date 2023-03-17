@@ -3,7 +3,7 @@ import DropdownMenu from "../Components/DropdownMenu";
 import NavLink from "./NavLink";
 
 export default function ResponsiveNavigation() {
-    const { auth, categories_global } = usePage().props;
+    const { auth, categories_global, uuid } = usePage().props;
 
     return (
         <nav className="sticky top-0 z-50 border-b border-gray-800 bg-black lg:hidden">
@@ -67,7 +67,7 @@ export default function ResponsiveNavigation() {
                                 <>
                                     <DropdownMenu.Link
                                         hr
-                                        href={route("editor")}
+                                        href={route("editor", uuid)}
                                     >
                                         New article
                                     </DropdownMenu.Link>

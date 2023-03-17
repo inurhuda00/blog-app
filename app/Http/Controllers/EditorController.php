@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tiptap\Editor;
@@ -34,18 +35,30 @@ class EditorController extends Controller
         ]);
     }
 
-    public function editor(Request $request,  Article $article)
+    public function editor(Request $request,  $uuid)
     {
-        $this->authorize('create', $article);
 
-        if ($article->exists) {
-            $this->authorize('update', $article);
+        $validator = validator($request->route()->parameters(), [
+            'uuid' => 'uuid'
+        ]);
 
-            $article = $article->load([
-                'category'
+        abort_if($validator->fails(), Response::HTTP_UNAUTHORIZED);
+
+        $article = Article::where('uuid', $uuid)->firstOr(function ($article) use ($request, $uuid) {
+            return $request->user()->articles()->firstOrCreate(['uuid' => $uuid], [
+                'title' => $title = 'Default Title ',
+                'slug' => str($title)->slug() . ' ' . uniqid(),
+                'status' => ArticleStatus::DRAFT->value,
+                'category_id' => rand(1, 5),
+                'body' => $this->sanitize('<h1>' . $title . '</h1><p>default content</p>'),
             ]);
-        }
+        });
 
+        $article = $article->load([
+            'category'
+        ]);
+
+        $this->authorize('update', $article);
 
         $statuses = $request->user()->canany(['edit any articles', 'manage articles']) ?  ['statuses' => $this->statuses] : [];
         $status = $article->exists ? ['is' => [
@@ -74,67 +87,28 @@ class EditorController extends Controller
         ]);
     }
 
-    public function store(ArticleRequest $request)
+
+    public function store(ArticleRequest $request, Article $article)
     {
         $this->authorize('create', Article::class);
 
-        $body = $this->sanitize($request->body);
-
-        $picture = $request->hasFile('picture') ? $this->convertImageWebp($request->file('picture'), $request->title) : null;
-
-        $article = $request->user()->articles()->create([
-            'title' => $request->title,
-            'slug' => str($request->title)->slug() . ' ' . uniqid(),
-            'excerpt' => $request->excerpt,
-            'category_id' => $request->category_id,
-            'picture' => $picture,
-            'status' => $request->status,
-            'body' => (new Editor())->setContent($body)->getJSON(),
-        ]);
-
-        collect($request->tags)->unique()->each(function ($tag) use ($article) {
-            $tag = Tag::firstOrCreate(
-                ['slug' => Str::slug($tag)],
-                ["name" => $tag]
-            );
-            $article->tags()->syncWithoutDetaching($tag);
-        });
+        $this->updateArticleWithStatus($request, $article, ArticleStatus::DRAFT);
 
         return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
             'type' => 'success',
-            'message' => 'article created'
+            'message' => 'artikel disimpan ke draft'
         ]);
     }
 
-    public function review(ArticleRequest $request)
+    public function review(ArticleRequest $request, Article $article)
     {
         $this->authorize('create', Article::class);
 
-        $body = (new Editor)->sanitize($request->body);
-
-        $article = $request->user()->articles()->create([
-            'title' => $request->title,
-            'slug' => str($request->title)->slug() . ' ' . uniqid(),
-            'excerpt' => $request->excerpt,
-            'category_id' => $request->category_id,
-            'status' => ArticleStatus::REVIEW->value,
-            'body' => $body,
-            'picture' => $request->hasFile('picture')
-                ? $this->convertImageWebp($request->file('picture'))
-                : null
-        ]);
-
-        collect($request->tags)->unique()->each(function ($tag) use ($article) {
-            $tag = Tag::firstOrCreate(
-                ['slug' => Str::slug($tag)],
-                ["name" => $tag]
-            );
-            $article->tags()->attach($tag);
-        });
+        $this->updateArticleWithStatus($request, $article, ArticleStatus::REVIEW);
 
         return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
             'type' => 'success',
-            'message' => 'article created'
+            'message' => 'artikel sukses dikirimkan untuk di tinjau'
         ]);
     }
 
@@ -142,13 +116,11 @@ class EditorController extends Controller
     {
         $this->authorize('update', $article);
 
-        $article->update([
-            'status' => ArticleStatus::REJECTED->value,
-        ]);
+        $this->updateArticleWithStatus($request, $article, ArticleStatus::REJECTED);
 
         return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
             'type' => 'success',
-            'message' => 'article rejected'
+            'message' => 'artikel ditolak oleh anda'
         ]);
     }
 
@@ -166,33 +138,11 @@ class EditorController extends Controller
             'published_at' => ['required']
         ]);
 
-        $body = (new Editor)->sanitize($request->body);
-
-        $article->update([
-            'title' => $request->title,
-            'slug' => str($request->title)->slug() . ' ' . uniqid(),
-            'excerpt' => $request->excerpt,
-            'category_id' => $request->category_id,
-            'status' => ArticleStatus::PUBLISHED->value,
-            'body' => (new Editor())->setContent($body)->getJSON(),
-            'published_at' => Carbon::create($request->published_at['startDate'])->setTimeFromTimeString('11:53:20'),
-            'picture' => $request->hasFile('picture')
-                ? $this->convertImageWebp($request->file('picture'))
-                : null,
-            'editor_id' => $request->user()->id
-        ]);
-
-        collect($request->tags)->unique()->each(function ($tag) use ($article) {
-            $tag = Tag::firstOrCreate(
-                ['slug' => Str::slug($tag)],
-                ["name" => $tag]
-            );
-            $article->tags()->syncWithoutDetaching($tag);
-        });
+        $this->updateArticleWithStatus($request, $article, ArticleStatus::PUBLISHED, ['editor_id' => $request->user()->id]);
 
         return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
             'type' => 'success',
-            'message' => 'article published'
+            'message' => 'Yeey! artikel sudah di publish'
         ]);
     }
 
@@ -211,33 +161,33 @@ class EditorController extends Controller
 
         ]);
 
-        $status = ArticleStatus::tryFrom($request->status);
-        $published_at = $request->published_at;
+        $this->updateArticleWithStatus($request, $article, ArticleStatus::from($request->status));
 
-        $published_at = $status === ArticleStatus::PUBLISHED && $request->has('published_at')
-            ? now()
-            : null;
+        return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
+            'type' => 'success',
+            'message' => 'berhasil mengedit artikel'
+        ]);
+    }
 
-
-        $body = $this->sanitize($request->body);
-
-        $picture = null;
-
+    private function updateArticleWithStatus(Request $request, Article $article, ArticleStatus $status, $other = [])
+    {
         if ($request->hasFile('picture')) {
             Storage::delete('public/' . $article->picture);
-            $picture = $this->convertImageWebp($request->file('picture'));
+            $picture = $this->convertImageWebp($request->file('picture'), $request->title);
         }
 
         $article->update([
             'title' => $request->title,
-            'slug' => str($request->title)->slug() . ' ' . uniqid(),
+            'slug' => str($request->title . ' ' . uniqid())->slug(),
             'excerpt' => $request->excerpt,
             'category_id' => $request->category_id,
             'status' => $status,
-            'body' => (new Editor())->setContent($body)->getJSON(),
-            'published_at' => !$request->has('published_at') ? Carbon::create($request->published_at['startDate'])->setTimeFromTimeString('11:53:20') : $published_at,
-            'picture' => $picture
+            'body' => $this->sanitize($request->body),
+            'published_at' => $request->has('published_at') ? Carbon::create($request->published_at['startDate']) : Carbon::now(),
+            'picture' => $picture,
+            ...$other
         ]);
+
 
         collect($request->tags)->unique()->each(function ($tag) use ($article) {
             $tag = Tag::firstOrCreate(
@@ -246,16 +196,13 @@ class EditorController extends Controller
             );
             $article->tags()->syncWithoutDetaching($tag);
         });
-
-        return to_route('articles.show', ['user' => $article->author, 'article' => $article])->with([
-            'type' => 'success',
-            'message' => 'article edited'
-        ]);
     }
 
     private function sanitize($body)
     {
-        return (new Editor())->sanitize($body);
+        $editor = new Editor();
+        $body = $editor->sanitize($body);
+        return $editor->setContent($body)->getJSON();
     }
 
     private function convertImageWebp($image, $title = null)
