@@ -44,11 +44,14 @@ class HandleInertiaRequests extends Middleware
             ->select('name', 'slug')
             ->get();
 
+        $roles = $request->user() ? $request->user()->roles()->get()->pluck('name') : null;
+
         $user = !is_null($request->user()) ? [
             'user' =>
             [
                 ...$request->user()->only(['id', 'name', 'username', 'email']),
                 'hasRole' => $request->user()->hasAnyRole(Role::all()),
+                ...$roles = $roles->contains(fn ($value, $key) => in_array($value, ['editor', 'admin'])) ? ['roles' => $roles] : [],
                 'avatar' => $request->user()->avatar_url
             ]
         ] : [];

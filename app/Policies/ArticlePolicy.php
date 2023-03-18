@@ -72,21 +72,18 @@ class ArticlePolicy
      * @param  \App\Models\Article  $article
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(?User $user, Article $article)
+    public function update(?User $user, Article $article,)
     {
 
         if ($user->can('manage articles')) {
             return $this->allow();
         }
 
-        if (
-            ($user->can('edit any articles') || $user->can('accept or reject articles'))
-            && !ArticleStatus::DRAFT->equals($article->status)
-        ) {
+        if ($user->can('edit any articles') || $user->can('accept or reject articles') && !ArticleStatus::DRAFT->equals($article->status)) {
             return $this->allow();
         }
 
-        if ($user->can('edit own articles')) {
+        if ($user->can('edit own articles') && ArticleStatus::DRAFT->equals($article->status) || ArticleStatus::REJECTED->equals($article->status)) {
             return $article->author()->is($user)
                 ? $this->allow()
                 : $this->denyAsNotFound();

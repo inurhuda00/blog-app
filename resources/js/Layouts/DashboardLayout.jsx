@@ -65,6 +65,20 @@ export default function Dashboard({ children }) {
                                 my article
                             </Link>
                         ) : null}
+                        {auth.user.roles &&
+                        auth.user.roles.includes("editor") ? (
+                            <Link
+                                href={route("submission")}
+                                className={clsx(
+                                    route().current("submission")
+                                        ? "bg-gray-800 text-white"
+                                        : null,
+                                    "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                                )}
+                            >
+                                submittion
+                            </Link>
+                        ) : null}
                     </nav>
                 </Container>
             ) : null}

@@ -39,12 +39,30 @@ export default function Navbar() {
                                     <div className="flex items-center">
                                         <DropdownMenu
                                             label={
-                                                <span className="flex rounded-full border-2 border-transparent text-sm transition focus:border-gray-300 focus:outline-none">
+                                                <span className="flex border-transparent py-1 px-3 text-sm transition focus:border-gray-300 focus:outline-none">
                                                     <img
                                                         className="h-8 w-8 rounded-full object-cover"
                                                         src={auth.user.avatar}
                                                         alt={auth.user.name}
                                                     />
+                                                    <div className="flex flex-col items-start justify-center pl-2 text-xs">
+                                                        <span>
+                                                            {auth.user.username}
+                                                        </span>
+                                                        {auth.user.roles &&
+                                                            auth.user.roles.map(
+                                                                (role) => (
+                                                                    <p
+                                                                        className="text-[10px]"
+                                                                        key={
+                                                                            role
+                                                                        }
+                                                                    >
+                                                                        {role}
+                                                                    </p>
+                                                                )
+                                                            )}
+                                                    </div>
                                                 </span>
                                             }
                                             toggle
@@ -54,6 +72,16 @@ export default function Navbar() {
                                             >
                                                 Dashboard
                                             </DropdownMenu.Link>
+                                            {auth.user.roles &&
+                                            auth.user.roles.includes(
+                                                "editor"
+                                            ) ? (
+                                                <DropdownMenu.Link
+                                                    href={route("submission")}
+                                                >
+                                                    Submission
+                                                </DropdownMenu.Link>
+                                            ) : null}
                                             <DropdownMenu.Link
                                                 href={route(
                                                     "users.show",

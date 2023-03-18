@@ -29,7 +29,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        //
+        // return $this->allow();
     }
 
     /**
@@ -89,5 +89,14 @@ class UserPolicy
     public function forceDelete(User $user, User $model)
     {
         //
+    }
+
+    public function viewSubmission(User $user)
+    {
+        if ($user->can('edit any articles') || $user->can('accept or reject articles')) {
+            return $this->allow();
+        }
+
+        return $this->deny();
     }
 }

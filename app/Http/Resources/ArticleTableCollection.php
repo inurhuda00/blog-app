@@ -25,6 +25,7 @@ class ArticleTableCollection extends ResourceCollection
      */
     public function toArray($request)
     {
+
         return [
             'data' => $this->collection,
             'attributes' => [
@@ -33,10 +34,10 @@ class ArticleTableCollection extends ResourceCollection
             ],
             'filtered' => [
                 'load' => $request->load ?? $this->defaultLoad,
-                'q' => $request->q ?? '',
-                'page' => $request->page ?? 1,
-                'field' => $request->field ?? '',
-                'direction' => $request->direction ?? '',
+                ...$q = $request->q ? ['q' => $request->q] : [],
+                ...$page = $request->page ? ['page' => $request->page] : [],
+                ...$field = $request->field ? ['field' => $request->field] : [],
+                ...$direction = $request->direction ? ['direction' => $request->direction] : [],
             ]
         ];
     }

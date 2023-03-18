@@ -37,14 +37,13 @@ class EditorController extends Controller
 
     public function editor(Request $request,  $uuid)
     {
-
         $validator = validator($request->route()->parameters(), [
             'uuid' => 'uuid'
         ]);
 
         abort_if($validator->fails(), Response::HTTP_UNAUTHORIZED);
 
-        $article = Article::where('uuid', $uuid)->firstOr(function ($article) use ($request, $uuid) {
+        $article = Article::where('uuid', $uuid)->firstOr(function () use ($request, $uuid) {
             return $request->user()->articles()->firstOrCreate(['uuid' => $uuid], [
                 'title' => $title = 'Default Title ',
                 'slug' => str($title)->slug() . ' ' . uniqid(),
@@ -176,6 +175,14 @@ class EditorController extends Controller
             $picture = $this->convertImageWebp($request->file('picture'), $request->title);
         }
 
+        $publishedAt = null;
+
+        if ($request->filled('published_at')) {
+            $publishedAt = $request->published_at['startDate'] ? Carbon::create($request->published_at['startDate'])
+                : Carbon::now();
+        }
+
+
         $article->update([
             'title' => $request->title,
             'slug' => str($request->title . ' ' . uniqid())->slug(),
@@ -183,7 +190,7 @@ class EditorController extends Controller
             'category_id' => $request->category_id,
             'status' => $status,
             'body' => $this->sanitize($request->body),
-            'published_at' => $request->has('published_at') ? Carbon::create($request->published_at['startDate']) : Carbon::now(),
+            'published_at' => $publishedAt,
             'picture' => $picture,
             ...$other
         ]);

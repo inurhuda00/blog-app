@@ -8,17 +8,15 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
-export default function ArticleTable(props) {
-    const { data: articles, meta, filtered, attributes } = props.articles;
-
+export default function Submission(props) {
+    const { data: articles, meta, filtered } = props.articles;
     const { ask } = useSwal();
 
     const [params, setParams] = useState(filtered);
-    const [pageNumber, setPageNumber] = useState([]);
 
     const reload = useDebouncedCallback((query) => {
         router.get(
-            route("articles.table"),
+            route("submission"),
 
             { ...query, page: query.q ? 1 : query.page },
             {
@@ -29,77 +27,15 @@ export default function ArticleTable(props) {
     });
 
     useEffect(() => reload(params), [params]);
-    useEffect(() => {
-        let numbers = [];
-
-        for (
-            let i = attributes.per_page;
-            i <= attributes.total / attributes.per_page;
-            i = i + attributes.per_page
-        ) {
-            numbers.push(i);
-        }
-
-        setPageNumber(numbers);
-    }, []);
-
-    const handleChange = (e) => {
-        setParams({ ...params, [e.target.name]: e.target.value });
-    };
 
     const sort = (item) => {
         setParams({
             ...params,
-            field: item,
-            direction: params.direction === "asc" ? "desc" : "asc",
         });
     };
 
     return (
         <Container>
-            <div className="flex items-center justify-start gap-2">
-                {pageNumber.length ? (
-                    <select
-                        name="load"
-                        id="load"
-                        onChange={(e) => handleChange(e)}
-                        value={params.load}
-                        className="mt-1
-                    flex-shrink
-                    
-                    border-gray-300
-                    shadow-sm
-                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                  "
-                    >
-                        {pageNumber.map((number, i) => (
-                            <option key={i} value={number}>
-                                {number}
-                            </option>
-                        ))}
-                    </select>
-                ) : null}
-
-                <label className="block w-full">
-                    <input
-                        type="text"
-                        className="
-                    mt-1
-                    block
-                    w-full
-                    
-                    border-gray-300
-                    shadow-sm
-                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                  "
-                        placeholder="search..."
-                        name="q"
-                        onChange={handleChange}
-                        value={params.q}
-                    />
-                </label>
-            </div>
-
             <Table>
                 <Table.Thead>
                     <tr>
@@ -112,7 +48,6 @@ export default function ArticleTable(props) {
                             Title
                         </Table.Th>
                         <Table.Th>Category</Table.Th>
-                        <Table.Th>Tags</Table.Th>
                         <Table.Th
                             onClick={() => sort("status")}
                             sortable
@@ -125,7 +60,7 @@ export default function ArticleTable(props) {
                 <Table.Tbody>
                     {articles.length ? (
                         articles.map((article, i) => (
-                            <tr key={article.id}>
+                            <tr key={i}>
                                 <Table.Td>{meta.from + i}</Table.Td>
                                 <Table.Td>
                                     <Link href={article.url}>
@@ -138,19 +73,6 @@ export default function ArticleTable(props) {
                                     </Link>
                                 </Table.Td>
 
-                                <Table.Td>
-                                    <div className="flex gap-x-1">
-                                        {article.tags.map((tag, i) => (
-                                            <Link
-                                                href={tag.url}
-                                                key={i}
-                                                className="rounded bg-gray-100 px-2 py-1 text-xs font-medium transition hover:bg-gray-200"
-                                            >
-                                                {tag.name}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </Table.Td>
                                 <Table.Td>
                                     <div className="flex gap-x-1">
                                         <span
@@ -182,7 +104,7 @@ export default function ArticleTable(props) {
                                             View
                                         </Table.DropdownItem>
                                         <Table.DropdownItem
-                                            href={route("editor", article.slug)}
+                                            href={route("editor", article.uuid)}
                                         >
                                             Edit
                                         </Table.DropdownItem>
@@ -250,4 +172,4 @@ export default function ArticleTable(props) {
     );
 }
 
-ArticleTable.layout = (page) => <DashboardLayout children={page} />;
+Submission.layout = (page) => <DashboardLayout children={page} />;

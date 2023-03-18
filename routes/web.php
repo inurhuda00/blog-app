@@ -7,6 +7,7 @@ use App\Http\Controllers\EditorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProfileController;
@@ -28,6 +29,7 @@ require __DIR__ . '/auth.php';
 // auth()->loginUsingId(2);
 
 Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified', 'hasRole'])->name('dashboard');
+Route::get('submission', SubmissionController::class)->middleware(['auth', 'verified', 'hasRole'])->name('submission');
 
 Route::get('/', HomeController::class)->name('home');
 
