@@ -7,11 +7,16 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\EmailChangeController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    Route::get('/auth/{provider}', [SocialiteController::class, 'redirectToProvider'])->name('social');
+
+    Route::get('/auth/{provider}/callback', [SocialiteController::class, 'handleProvideCallback'])->name('social.collback');
+
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 

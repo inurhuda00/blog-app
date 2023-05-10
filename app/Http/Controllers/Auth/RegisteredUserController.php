@@ -60,6 +60,8 @@ class RegisteredUserController extends Controller
             'display' => 'goahira.co'
         ]);
 
+        $user->assignRole('writer');
+
         event(new Registered($user));
 
         Auth::login($user);

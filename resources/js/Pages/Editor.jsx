@@ -395,7 +395,7 @@ const ActionsButton = ({
         auth,
         article,
         can: { createArticles, acceptOrRejectArticle, editAnyArticles },
-        is: { draft, review, published },
+        is: { draft, review, published, rejected },
     } = usePage().props;
 
     const handleDraftArticle = (e) => {
@@ -538,26 +538,29 @@ const ActionsButton = ({
                 </>
             ) : null}
 
-            {(!article?.author && draft) ||
-            (article?.author.username === auth.user.username && draft) ? (
+            {!article?.author ||
+            article?.author.username === auth.user.username ? (
                 <>
-                    <button
-                        disabled={!createAndDraft || processing}
-                        onClick={createAndDraft ? handleDraftArticle : null}
-                        className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
-                        title="simpan ke draft"
-                    >
-                        Draft
-                    </button>
-
-                    <button
-                        disabled={!createReview || processing}
-                        onClick={createReview ? handleSubmitArticle : null}
-                        className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
-                        title="kirimkan artikel"
-                    >
-                        Kirim Tulisan
-                    </button>
+                    {draft && (
+                        <button
+                            disabled={!createAndDraft || processing}
+                            onClick={createAndDraft ? handleDraftArticle : null}
+                            className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
+                            title="simpan ke draft"
+                        >
+                            Draft
+                        </button>
+                    )}
+                    {rejected && (
+                        <button
+                            disabled={!createReview || processing}
+                            onClick={createReview ? handleSubmitArticle : null}
+                            className="initial-flex items-center justify-center bg-gray-900 px-3 py-2 text-xs text-white disabled:bg-slate-500"
+                            title="kirimkan artikel"
+                        >
+                            Kirim Tulisan
+                        </button>
+                    )}
                 </>
             ) : null}
 

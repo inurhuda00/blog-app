@@ -18,6 +18,8 @@ export default function Home({ articles }) {
                             <Articles.CardFeature articles={articles} />
                             <div className="col-span-full mb-10 inline-flex flex-1 flex-col divide-y divide-gray-700 px-2 text-gray-900 md:col-span-5 lg:px-5">
                                 <Articles.CardFeatureSmall
+                                    index={1}
+                                    count={4}
                                     articles={articles}
                                 />
                             </div>
@@ -31,7 +33,11 @@ export default function Home({ articles }) {
                     <Section.Title title="Pilihan Editor" />
                     {articles.length ? (
                         <Articles className="mb-6 grid grid-cols-2 gap-y-10 md:grid-cols-4 md:divide-x md:divide-gray-200 md:px-3">
-                            <Articles.CardEditorPick articles={articles} />
+                            <Articles.CardEditorPick
+                                articles={articles}
+                                index={4}
+                                count={8}
+                            />
                         </Articles>
                     ) : null}
                 </Container>
@@ -39,7 +45,7 @@ export default function Home({ articles }) {
             {/* new article */}
             <section className="mb-12">
                 <Container>
-                    <Section.Title title="Pilihan Editor" />
+                    <Section.Title title="New Article" />
                     {articles.length ? (
                         <div className="mb-6">
                             <Articles className="mb-12 grid grid-cols-2 md:grid-cols-3 md:px-3">
@@ -55,7 +61,12 @@ export default function Home({ articles }) {
                     <Section.Title title="Editorial" />
                     {articles.length ? (
                         <Articles className="mb-6 grid grid-cols-2 gap-y-5 md:grid-cols-4 md:divide-x md:divide-gray-200 md:px-3">
-                            <Articles.CardEditorPick articles={articles} dark />
+                            <Articles.CardEditorPick
+                                articles={articles}
+                                dark
+                                index={4}
+                                count={8}
+                            />
                         </Articles>
                     ) : null}
                 </Container>

@@ -52,7 +52,8 @@ class HandleInertiaRequests extends Middleware
                 ...$request->user()->only(['id', 'name', 'username', 'email']),
                 'hasRole' => $request->user()->hasAnyRole(Role::all()),
                 ...$roles = $roles->contains(fn ($value, $key) => in_array($value, ['editor', 'admin'])) ? ['roles' => $roles] : [],
-                'avatar' => $request->user()->avatar_url
+                'avatar' => $request->user()->avatar_url,
+                'password' => !$request->user()->password
             ]
         ] : [];
 

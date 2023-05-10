@@ -16,6 +16,29 @@ export default function Dashboard({ children }) {
     return (
         <>
             <Navigation />
+            {auth.user.password ? (
+                <div className="flex items-center justify-center bg-gray-900 px-6 py-2.5 sm:px-3.5">
+                    <p className="text-sm leading-6 text-white">
+                        <a href="#">
+                            <strong className="font-semibold">password </strong>
+                            <svg
+                                viewBox="0 0 2 2"
+                                className="mx-2 inline h-0.5 w-0.5 fill-current"
+                                aria-hidden="true"
+                            >
+                                <circle cx={1} cy={1} r={1} />
+                            </svg>
+                            please provide a password for your account&nbsp;
+                        </a>
+                    </p>
+                    <Link
+                        href={route("settings.account")}
+                        className="text-sm leading-6 text-white underline"
+                    >
+                        here
+                    </Link>
+                </div>
+            ) : null}
             {auth.user ? (
                 <Container className="px-4 ">
                     <nav className="flex justify-start space-x-4 py-2">
@@ -25,7 +48,7 @@ export default function Dashboard({ children }) {
                                 route().current("dashboard")
                                     ? "bg-gray-800 text-white"
                                     : null,
-                                "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                                "inline-flex items-center px-2 py-1 text-xs font-medium text-gray-400 "
                             )}
                         >
                             Dashboard
@@ -36,7 +59,7 @@ export default function Dashboard({ children }) {
                                 route().current("settings.account")
                                     ? "bg-gray-800 text-white"
                                     : null,
-                                "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                                "inline-flex items-center px-2 py-1 text-xs font-medium text-gray-400 "
                             )}
                         >
                             Account
@@ -47,7 +70,7 @@ export default function Dashboard({ children }) {
                                 route().current("profile.show")
                                     ? "bg-gray-800 text-white"
                                     : null,
-                                "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                                "inline-flex items-center px-2 py-1 text-xs font-medium text-gray-400 "
                             )}
                         >
                             Profile
@@ -59,7 +82,7 @@ export default function Dashboard({ children }) {
                                     route().current("articles.table")
                                         ? "bg-gray-800 text-white"
                                         : null,
-                                    "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                                    "inline-flex items-center px-2 py-1 text-xs font-medium text-gray-400 "
                                 )}
                             >
                                 my article
@@ -73,7 +96,7 @@ export default function Dashboard({ children }) {
                                     route().current("submission")
                                         ? "bg-gray-800 text-white"
                                         : null,
-                                    "inline-flex items-center py-1 px-2 text-xs font-medium text-gray-400 "
+                                    "inline-flex items-center px-2 py-1 text-xs font-medium text-gray-400 "
                                 )}
                             >
                                 submittion
@@ -82,6 +105,7 @@ export default function Dashboard({ children }) {
                     </nav>
                 </Container>
             ) : null}
+
             <Toaster />
 
             <div className="px-4 pt-8">{children}</div>
