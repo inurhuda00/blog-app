@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 export default function ArticleTable(props) {
+    console.log(props.articles);
     const { data: articles, meta, filtered, attributes } = props.articles;
 
     const { ask } = useSwal();
@@ -182,7 +183,7 @@ export default function ArticleTable(props) {
                                             View
                                         </Table.DropdownItem>
                                         <Table.DropdownItem
-                                            href={route("editor", article.slug)}
+                                            href={route("editor", article.uuid)}
                                         >
                                             Edit
                                         </Table.DropdownItem>

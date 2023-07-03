@@ -89,7 +89,6 @@ class ArticlePolicy
                 : $this->denyAsNotFound();
         }
 
-
         return $this->deny();
     }
 

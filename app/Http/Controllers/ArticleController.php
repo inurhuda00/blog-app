@@ -23,7 +23,6 @@ class ArticleController extends Controller
 
     public function __construct()
     {
-        $this->authorizeResource(Article::class, 'article');
         $this->middleware('auth')->except('show', 'index');
         $this->middleware('hasRole')->only('table');
 
@@ -37,7 +36,6 @@ class ArticleController extends Controller
 
     public function table(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'direction' => ['in:asc,desc'],
             'field' => ['in:title,status'],
@@ -98,6 +96,7 @@ class ArticleController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Article::class);
         $articles = Article::query()
             ->select('slug', 'title', 'picture', 'excerpt', 'user_id', 'category_id', 'published_at', 'id')
             ->with([
@@ -121,6 +120,8 @@ class ArticleController extends Controller
      */
     public function show(Request $request, User $user, Article $article)
     {
+        $this->authorize('viewAny', $article);
+
         $currentArticle = $article->load([
             'tags' => fn ($query) => $query->select('name', 'slug'),
             'category' => fn ($query) => $query->select('id', 'name', 'slug'),
@@ -159,6 +160,8 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        $this->authorize('delete', $article);
+
         if ($article->picture) {
             Storage::delete($article->picture);
         }

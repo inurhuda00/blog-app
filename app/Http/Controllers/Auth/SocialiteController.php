@@ -37,6 +37,7 @@ class SocialiteController extends Controller
                         'name' =>  $socialUser->getName(),
                         'email' => $email = $socialUser->getEmail(),
                         'username' => strstr($email, '@', true),
+                        'avatar' => $socialUser->getAvatar()
                     ]);
 
                     $user->assignRole('writer');

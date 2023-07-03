@@ -27,11 +27,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user = User::factory()->hasArticles(150)->create([
-            'name' => 'Ilham Nuruddin Al Huda',
-            'email' => 'inurhuda00@gmail.com',
-            'username' => 'inurhuda00',
+            'name' => 'Seorang Editor',
+            'email' => 'editor@gmail.com',
+            'username' => 'seorang_editor',
         ]);
 
         $user->assignRole('editor');
+
+
+        $user = User::factory()->hasArticles(150)->create([
+            'name' => 'Seorang Writer',
+            'email' => 'writer@gmail.com',
+            'username' => 'seorang_writer',
+        ]);
+
+        $user->assignRole('writer');
     }
 }

@@ -37,6 +37,7 @@ class EditorController extends Controller
 
     public function editor(Request $request,  $uuid)
     {
+
         $validator = validator($request->route()->parameters(), [
             'uuid' => 'uuid'
         ]);
@@ -52,6 +53,18 @@ class EditorController extends Controller
                 'body' => $this->sanitize('<h1>' . $title . '</h1><p>default content</p>'),
             ]);
         });
+
+
+        if (
+            !$request->user()->can('edit any articles')
+            || !$request->user()->can('accept or reject articles')
+            && ArticleStatus::REVIEW->equals($article->status)
+        ) {
+            return back()->with([
+                'type' => 'error',
+                'message' => 'artikel sedang dalam review'
+            ]);
+        };
 
         $article = $article->load([
             'category'
